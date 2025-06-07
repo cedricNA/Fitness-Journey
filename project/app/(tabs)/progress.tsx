@@ -127,7 +127,7 @@ export default function Progress() {
               </TouchableOpacity>
             ))}
           </View>
-        </div>
+        </View>
         
         <ProgressChart 
           data={weightData}
