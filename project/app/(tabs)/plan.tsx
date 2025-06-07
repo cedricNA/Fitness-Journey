@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { Utensils, Activity, Moon, Droplets, Brain, ChevronRight, Target } from 'lucide-react-native';
+import { useUser } from '@/context/UserContext';
 
 const { width } = Dimensions.get('window');
 
 export default function Plan() {
   const [activeTab, setActiveTab] = useState<'nutrition' | 'workout' | 'lifestyle'>('nutrition');
-  const [userGoal] = useState<'weight_loss' | 'muscle_gain'>('weight_loss');
+  const { user } = useUser();
 
   const themeColors = {
     weight_loss: {
@@ -21,7 +22,7 @@ export default function Plan() {
     }
   };
 
-  const colors = themeColors[userGoal];
+  const colors = themeColors[user.goal];
 
   const tabs = [
     { id: 'nutrition', title: 'Nutrition', icon: Utensils },
@@ -209,7 +210,7 @@ export default function Plan() {
       <View style={[styles.header, { backgroundColor: colors.secondary }]}>
         <Text style={styles.headerTitle}>Mon Plan Personnalisé</Text>
         <Text style={styles.headerSubtitle}>
-          Optimisé pour votre objectif de {userGoal === 'weight_loss' ? 'perte de poids' : 'prise de masse'}
+          Optimisé pour votre objectif de {user.goal === 'weight_loss' ? 'perte de poids' : 'prise de masse'}
         </Text>
       </View>
 

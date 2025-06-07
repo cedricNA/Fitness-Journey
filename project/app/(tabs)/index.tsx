@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { Plus, Target, Activity, Utensils, Award, ChevronRight } from 'lucide-react-native';
+import { useUser } from '@/context/UserContext';
 
 const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
-  const [userGoal, setUserGoal] = useState<'weight_loss' | 'muscle_gain'>('weight_loss');
-  const [userName] = useState('Marie');
+  const { user, setUser } = useUser();
   const [currentWeight] = useState(68);
   const [targetWeight] = useState(60);
   const [weeklyProgress] = useState(75);
@@ -24,7 +24,7 @@ export default function Dashboard() {
     }
   };
 
-  const colors = themeColors[userGoal];
+  const colors = themeColors[user.goal];
 
   const stats = [
     { label: 'Poids actuel', value: `${currentWeight} kg`, progress: ((targetWeight / currentWeight) * 100) },
@@ -44,16 +44,16 @@ export default function Dashboard() {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.secondary }]}>
         <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeText}>Bonjour {userName} 👋</Text>
+          <Text style={styles.welcomeText}>Bonjour {user.name.split(' ')[0]} 👋</Text>
           <Text style={styles.subtitle}>Prêt(e) à progresser aujourd'hui ?</Text>
         </View>
         
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.goalBadge, { backgroundColor: colors.primary }]}
-          onPress={() => setUserGoal(userGoal === 'weight_loss' ? 'muscle_gain' : 'weight_loss')}
+          onPress={() => setUser(u => ({ ...u, goal: u.goal === 'weight_loss' ? 'muscle_gain' : 'weight_loss' }))}
         >
           <Text style={styles.goalText}>
-            {userGoal === 'weight_loss' ? '🔥 Perte de poids' : '💪 Prise de masse'}
+            {user.goal === 'weight_loss' ? '🔥 Perte de poids' : '💪 Prise de masse'}
           </Text>
         </TouchableOpacity>
       </View>
