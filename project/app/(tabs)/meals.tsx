@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Plus, Search, Camera, Clock, Zap, Target, ChevronRight, Utensils, X } from 'lucide-react-native';
 import NutritionCard from '@/components/NutritionCard';
+import { FoodItem } from '@/types';
 
 export default function Meals() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMeal, setSelectedMeal] = useState<'breakfast' | 'lunch' | 'snack' | 'dinner'>('breakfast');
   const [showAddMeal, setShowAddMeal] = useState(false);
-  const [selectedFood, setSelectedFood] = useState<any>(null);
-  const [todayMeals, setTodayMeals] = useState([
+  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
+  const [todayMeals, setTodayMeals] = useState<FoodItem[]>([
     {
       id: 1,
       type: 'breakfast',
@@ -40,7 +41,7 @@ export default function Meals() {
     { key: 'dinner', label: 'Dîner', emoji: '🍽️', target: 500 }
   ];
 
-  const suggestions = [
+  const suggestions: FoodItem[] = [
     { name: 'Œufs brouillés aux épinards', calories: 280, protein: 20, carbs: 8, fat: 18, category: 'breakfast' },
     { name: 'Yaourt grec aux myrtilles', calories: 150, protein: 15, carbs: 20, fat: 2, category: 'breakfast' },
     { name: 'Toast avocat complet', calories: 220, protein: 8, carbs: 25, fat: 12, category: 'breakfast' },
@@ -69,7 +70,7 @@ export default function Meals() {
     fat: totals.fat + (meal.fat * meal.quantity)
   }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
-  const addMeal = (meal: any, quantity: number = 1) => {
+  const addMeal = (meal: FoodItem, quantity: number = 1) => {
     const newMeal = {
       ...meal,
       id: Date.now(),
@@ -103,7 +104,7 @@ export default function Meals() {
       .reduce((sum, meal) => sum + (meal.calories * meal.quantity), 0);
   };
 
-  const openAddMeal = (food: any) => {
+  const openAddMeal = (food: FoodItem) => {
     setSelectedFood(food);
     setShowAddMeal(true);
   };
@@ -148,7 +149,7 @@ export default function Meals() {
               <TouchableOpacity
                 key={type.key}
                 style={[styles.mealTypeCard, isSelected && styles.mealTypeCardSelected]}
-                onPress={() => setSelectedMeal(type.key as any)}
+                onPress={() => setSelectedMeal(type.key as 'breakfast' | 'lunch' | 'snack' | 'dinner')}
               >
                 <Text style={styles.mealTypeEmoji}>{type.emoji}</Text>
                 <Text style={[styles.mealTypeLabel, isSelected && styles.mealTypeLabelSelected]}>
@@ -319,7 +320,7 @@ export default function Meals() {
               <View style={styles.addButtonContainer}>
                 <TouchableOpacity 
                   style={styles.addButton}
-                  onPress={() => addMeal(selectedFood, 1)}
+                  onPress={() => selectedFood && addMeal(selectedFood, 1)}
                 >
                   <Text style={styles.addButtonText}>Ajouter à {mealTypes.find(t => t.key === selectedMeal)?.label.toLowerCase()}</Text>
                 </TouchableOpacity>
