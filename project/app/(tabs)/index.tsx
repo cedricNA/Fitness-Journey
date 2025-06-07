@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { Plus, Target, Activity, Utensils, Award, ChevronRight } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 import { useUser } from '@/context/UserContext';
 
 const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const { user, setUser } = useUser();
+  const router = useRouter();
   const [currentWeight] = useState(68);
   const [targetWeight] = useState(60);
   const [weeklyProgress] = useState(75);
@@ -34,9 +36,9 @@ export default function Dashboard() {
   ];
 
   const quickActions = [
-    { title: 'Ajouter un repas', icon: Utensils, color: '#F59E0B' },
-    { title: 'Nouvelle séance', icon: Activity, color: '#8B5CF6' },
-    { title: 'Consulter le plan', icon: Target, color: colors.primary }
+    { title: 'Ajouter un repas', icon: Utensils, color: '#F59E0B', href: '/meals' },
+    { title: 'Nouvelle séance', icon: Activity, color: '#8B5CF6', href: '/workouts' },
+    { title: 'Consulter le plan', icon: Target, color: colors.primary, href: '/plan' }
   ];
 
   return (
@@ -83,7 +85,11 @@ export default function Dashboard() {
       <View style={styles.actionsContainer}>
         <Text style={styles.sectionTitle}>Actions rapides</Text>
         {quickActions.map((action, index) => (
-          <TouchableOpacity key={index} style={styles.actionCard}>
+          <TouchableOpacity
+            key={index}
+            style={styles.actionCard}
+            onPress={() => router.push(action.href)}
+          >
             <View style={styles.actionLeft}>
               <View style={[styles.iconContainer, { backgroundColor: action.color + '20' }]}>
                 <action.icon size={24} color={action.color} />
