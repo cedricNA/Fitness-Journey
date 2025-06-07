@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X } from 'lucide-react-native';
 import WorkoutTimer from '@/components/WorkoutTimer';
+import { getWorkouts, saveWorkouts, WorkoutEntry } from '@/storage';
 
 const { width } = Dimensions.get('window');
 
@@ -9,26 +10,11 @@ export default function Workouts() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'cardio' | 'strength' | 'flexibility'>('all');
   const [showTimer, setShowTimer] = useState(false);
   const [activeWorkout, setActiveWorkout] = useState<any>(null);
-  const [workoutHistory, setWorkoutHistory] = useState([
-    {
-      id: 1,
-      name: 'HIIT Cardio',
-      duration: 30,
-      calories: 280,
-      type: 'cardio',
-      date: '2024-01-15',
-      completed: true
-    },
-    {
-      id: 2,
-      name: 'Full Body Strength',
-      duration: 45,
-      calories: 320,
-      type: 'strength',
-      date: '2024-01-13',
-      completed: true
-    }
-  ]);
+  const [workoutHistory, setWorkoutHistory] = useState<WorkoutEntry[]>([]);
+
+  useEffect(() => {
+    getWorkouts().then(setWorkoutHistory);
+  }, []);
 
   const categories = [
     { key: 'all', label: 'Tous', emoji: '💪' },
@@ -146,7 +132,9 @@ export default function Workouts() {
         date: new Date().toISOString().split('T')[0],
         completed: true
       };
-      setWorkoutHistory([newWorkout, ...workoutHistory]);
+      const updated = [newWorkout, ...workoutHistory];
+      setWorkoutHistory(updated);
+      saveWorkouts(updated);
     }
     setShowTimer(false);
     setActiveWorkout(null);

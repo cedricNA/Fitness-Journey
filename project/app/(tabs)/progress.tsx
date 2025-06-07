@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { TrendingUp, Camera, Calendar, Target, Award, ChevronRight, Scale, Ruler } from 'lucide-react-native';
 import ProgressChart from '@/components/ProgressChart';
+import { getWeights, WeightEntry } from '@/storage';
 
 const { width } = Dimensions.get('window');
 
@@ -21,13 +22,15 @@ export default function Progress() {
     { key: '3months', label: '3M' }
   ];
 
-  const weightData = [
-    { date: '2024-01-01', value: 72.5 },
-    { date: '2024-01-07', value: 71.8 },
-    { date: '2024-01-14', value: 70.9 },
-    { date: '2024-01-21', value: 70.2 },
-    { date: '2024-01-28', value: 69.8 }
-  ];
+  const [weightData, setWeightData] = useState<WeightEntry[]>([]);
+
+  useEffect(() => {
+    getWeights().then((data) => {
+      if (data.length > 0) {
+        setWeightData(data);
+      }
+    });
+  }, []);
 
   const measurements = [
     { name: 'Tour de taille', current: 78, initial: 85, unit: 'cm', change: -7 },
