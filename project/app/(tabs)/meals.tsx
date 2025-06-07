@@ -1,38 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Plus, Search, Camera, Clock, Zap, Target, ChevronRight, Utensils, X } from 'lucide-react-native';
 import NutritionCard from '@/components/NutritionCard';
 import { FoodItem } from '@/types';
+import { getMeals, saveMeals } from '@/storage';
 
 export default function Meals() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMeal, setSelectedMeal] = useState<'breakfast' | 'lunch' | 'snack' | 'dinner'>('breakfast');
   const [showAddMeal, setShowAddMeal] = useState(false);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
-  const [todayMeals, setTodayMeals] = useState<FoodItem[]>([
-    {
-      id: 1,
-      type: 'breakfast',
-      name: 'Avoine aux fruits',
-      calories: 320,
-      protein: 12,
-      carbs: 45,
-      fat: 8,
-      time: '08:30',
-      quantity: 1
-    },
-    {
-      id: 2,
-      type: 'lunch',
-      name: 'Salade César au poulet',
-      calories: 450,
-      protein: 35,
-      carbs: 25,
-      fat: 22,
-      time: '12:45',
-      quantity: 1
-    }
-  ]);
+  const [todayMeals, setTodayMeals] = useState<FoodItem[]>([]);
+
+  useEffect(() => {
+    getMeals().then(setTodayMeals);
+  }, []);
 
   const mealTypes = [
     { key: 'breakfast', label: 'Petit-déj', emoji: '🥣', target: 350 },
@@ -78,18 +60,24 @@ export default function Meals() {
       time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       quantity
     };
-    setTodayMeals([...todayMeals, newMeal]);
+    const updated = [...todayMeals, newMeal];
+    setTodayMeals(updated);
+    saveMeals(updated);
     setShowAddMeal(false);
     setSelectedFood(null);
   };
 
   const updateMealQuantity = (mealId: number, newQuantity: number) => {
     if (newQuantity <= 0) {
-      setTodayMeals(todayMeals.filter(meal => meal.id !== mealId));
+      const updated = todayMeals.filter(meal => meal.id !== mealId);
+      setTodayMeals(updated);
+      saveMeals(updated);
     } else {
-      setTodayMeals(todayMeals.map(meal => 
+      const updated = todayMeals.map(meal =>
         meal.id === mealId ? { ...meal, quantity: newQuantity } : meal
-      ));
+      );
+      setTodayMeals(updated);
+      saveMeals(updated);
     }
   };
 
