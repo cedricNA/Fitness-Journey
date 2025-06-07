@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { User, Settings, Bell, Moon, Globe, Award, Target, ChevronRight, CreditCard as Edit, Camera, Activity } from 'lucide-react-native';
+import { useUser } from '@/context/UserContext';
 
 export default function Profile() {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const [userInfo] = useState({
-    name: 'Marie Dupont',
-    email: 'marie.dupont@email.com',
-    age: 28,
-    height: 165,
-    goal: 'weight_loss',
-    joinDate: '2024-01-01',
-    level: 'Intermédiaire'
-  });
+  const { user } = useUser();
 
   const [preferences] = useState({
     dietType: 'Équilibrée',
@@ -66,7 +59,7 @@ export default function Profile() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: getGoalColor(userInfo.goal) + '20' }]}>
+      <View style={[styles.header, { backgroundColor: getGoalColor(user.goal) + '20' }]}>
         <View style={styles.profileSection}>
           <TouchableOpacity style={styles.avatarContainer}>
             <View style={styles.avatar}>
@@ -78,11 +71,11 @@ export default function Profile() {
           </TouchableOpacity>
           
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{userInfo.name}</Text>
-            <Text style={styles.userEmail}>{userInfo.email}</Text>
+            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.userEmail}>{user.email}</Text>
             <View style={styles.goalBadge}>
-              <Text style={[styles.goalText, { color: getGoalColor(userInfo.goal) }]}>
-                {getGoalText(userInfo.goal)} • {userInfo.level}
+              <Text style={[styles.goalText, { color: getGoalColor(user.goal) }]}>
+                {getGoalText(user.goal)} • {user.level}
               </Text>
             </View>
           </View>
@@ -96,16 +89,16 @@ export default function Profile() {
         <View style={styles.detailsContainer}>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Âge</Text>
-            <Text style={styles.detailValue}>{userInfo.age} ans</Text>
+            <Text style={styles.detailValue}>{user.age} ans</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Taille</Text>
-            <Text style={styles.detailValue}>{userInfo.height} cm</Text>
+            <Text style={styles.detailValue}>{user.height} cm</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Membre depuis</Text>
             <Text style={styles.detailValue}>
-              {new Date(userInfo.joinDate).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+              {new Date(user.joinDate).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
             </Text>
           </View>
         </View>
@@ -117,10 +110,10 @@ export default function Profile() {
         <View style={styles.statsContainer}>
           {stats.map((stat, index) => (
             <View key={index} style={styles.statCard}>
-              <View style={[styles.statIcon, { backgroundColor: getGoalColor(userInfo.goal) + '20' }]}>
-                <stat.icon size={20} color={getGoalColor(userInfo.goal)} />
+              <View style={[styles.statIcon, { backgroundColor: getGoalColor(user.goal) + '20' }]}>
+                <stat.icon size={20} color={getGoalColor(user.goal)} />
               </View>
-              <Text style={[styles.statValue, { color: getGoalColor(userInfo.goal) }]}>
+              <Text style={[styles.statValue, { color: getGoalColor(user.goal) }]}>
                 {stat.value}
               </Text>
               <Text style={styles.statLabel}>{stat.label}</Text>
@@ -172,8 +165,8 @@ export default function Profile() {
                     <Switch
                       value={item.value}
                       onValueChange={item.onToggle}
-                      trackColor={{ false: '#E5E7EB', true: getGoalColor(userInfo.goal) + '40' }}
-                      thumbColor={item.value ? getGoalColor(userInfo.goal) : '#F3F4F6'}
+                      trackColor={{ false: '#E5E7EB', true: getGoalColor(user.goal) + '40' }}
+                      thumbColor={item.value ? getGoalColor(user.goal) : '#F3F4F6'}
                     />
                   ) : (
                     <>
@@ -195,7 +188,7 @@ export default function Profile() {
         <Text style={styles.sectionTitle}>Progression du niveau</Text>
         <View style={styles.levelCard}>
           <View style={styles.levelHeader}>
-            <Text style={styles.levelTitle}>Niveau {userInfo.level}</Text>
+            <Text style={styles.levelTitle}>Niveau {user.level}</Text>
             <Text style={styles.levelPoints}>2,450 / 3,000 XP</Text>
           </View>
           <View style={styles.levelProgress}>
@@ -204,7 +197,7 @@ export default function Profile() {
                 styles.levelProgressFill,
                 { 
                   width: '82%',
-                  backgroundColor: getGoalColor(userInfo.goal)
+                  backgroundColor: getGoalColor(user.goal)
                 }
               ]} 
             />
