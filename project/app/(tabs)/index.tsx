@@ -24,12 +24,16 @@ import { useTheme } from '@/context/ThemeContext';
 const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
-  const { user, setUser } = useUser();
+  const { user, setUser, loading } = useUser();
   const router = useRouter();
   const { theme, toggleTheme, colors } = useTheme();
   const [currentWeight] = useState(68);
   const [targetWeight] = useState(60);
   const [weeklyProgress] = useState(75);
+
+  if (loading || !user) {
+    return null;
+  }
 
   const goalPalettes = {
     weight_loss: {
