@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { User, Settings, Bell, Moon, Globe, Award, Target, ChevronRight, CreditCard as Edit, Camera, Activity } from 'lucide-react-native';
 import { useUser } from '@/context/UserContext';
+import { useRouter } from 'expo-router';
 
 export default function Profile() {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const { user } = useUser();
+  const router = useRouter();
 
   const [preferences] = useState({
     dietType: 'Équilibrée',
@@ -25,8 +27,8 @@ export default function Profile() {
     {
       title: 'Mon compte',
       items: [
-        { label: 'Informations personnelles', icon: User, onPress: () => {} },
-        { label: 'Objectifs et préférences', icon: Target, onPress: () => {} },
+        { label: 'Informations personnelles', icon: User, onPress: () => router.push('/account') },
+        { label: 'Objectifs et préférences', icon: Target, onPress: () => router.push('/account') },
         { label: 'Notifications', icon: Bell, hasSwitch: true, value: notifications, onToggle: setNotifications }
       ]
     },
@@ -34,16 +36,16 @@ export default function Profile() {
       title: 'Paramètres',
       items: [
         { label: 'Mode sombre', icon: Moon, hasSwitch: true, value: darkMode, onToggle: setDarkMode },
-        { label: 'Langue', icon: Globe, value: preferences.language, onPress: () => {} },
-        { label: 'Unités de mesure', icon: Settings, value: preferences.units, onPress: () => {} }
+        { label: 'Langue', icon: Globe, value: preferences.language, onPress: () => router.push('/settings') },
+        { label: 'Unités de mesure', icon: Settings, value: preferences.units, onPress: () => router.push('/settings') }
       ]
     },
     {
       title: 'Support',
       items: [
-        { label: 'Centre d\'aide', icon: Settings, onPress: () => {} },
-        { label: 'Nous contacter', icon: Settings, onPress: () => {} },
-        { label: 'Conditions d\'utilisation', icon: Settings, onPress: () => {} }
+        { label: 'Centre d\'aide', icon: Settings, onPress: () => router.push('/support') },
+        { label: 'Nous contacter', icon: Settings, onPress: () => router.push('/support') },
+        { label: 'Conditions d\'utilisation', icon: Settings, onPress: () => router.push('/support') }
       ]
     }
   ];
