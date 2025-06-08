@@ -68,7 +68,11 @@ export default function Dashboard() {
     >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: goalColors.secondary }]}>
-        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+        <TouchableOpacity
+          testID="toggle-theme"
+          onPress={toggleTheme}
+          style={styles.themeToggle}
+        >
           {theme === 'light' ? (
             <Moon size={24} color="#1F2937" />
           ) : (
