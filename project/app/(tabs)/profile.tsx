@@ -10,6 +10,7 @@ export default function Profile() {
   const { user } = useUser();
   const router = useRouter();
   const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const [preferences] = useState({
     dietType: 'Équilibrée',
@@ -59,7 +60,7 @@ export default function Profile() {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: getGoalColor(user.goal) + '20' }]}>
         <View style={styles.profileSection}>
@@ -234,10 +235,13 @@ export default function Profile() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (
+  colors: import('@/context/ThemeContext').ThemeColors
+) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   header: {
     padding: 20,
@@ -257,7 +261,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -279,11 +283,11 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
   },
   userEmail: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   goalBadge: {
@@ -298,7 +302,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     gap: 16,
@@ -309,13 +313,13 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   statsSection: {
     padding: 20,
@@ -323,7 +327,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   statsContainer: {
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -352,7 +356,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   section: {
@@ -360,7 +364,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   preferencesCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
   },
@@ -372,15 +376,15 @@ const styles = StyleSheet.create({
   },
   preferenceLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   preferenceValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   menuCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -392,7 +396,7 @@ const styles = StyleSheet.create({
   },
   menuItemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: colors.border,
   },
   menuLeft: {
     flexDirection: 'row',
@@ -403,14 +407,14 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   menuLabel: {
     fontSize: 16,
-    color: '#1F2937',
+    color: colors.text,
   },
   menuRight: {
     flexDirection: 'row',
@@ -419,10 +423,10 @@ const styles = StyleSheet.create({
   },
   menuValue: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   levelCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 20,
   },
@@ -435,15 +439,15 @@ const styles = StyleSheet.create({
   levelTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
   },
   levelPoints: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   levelProgress: {
     height: 6,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 3,
     overflow: 'hidden',
     marginBottom: 8,
@@ -454,7 +458,7 @@ const styles = StyleSheet.create({
   },
   levelDescription: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   achievementPreview: {
@@ -463,7 +467,7 @@ const styles = StyleSheet.create({
   },
   achievementItem: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -474,7 +478,7 @@ const styles = StyleSheet.create({
   },
   achievementText: {
     fontSize: 12,
-    color: '#1F2937',
+    color: colors.text,
     textAlign: 'center',
     fontWeight: '600',
   },
