@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Play, Pause, Square, RotateCcw } from 'lucide-react-native';
 
 interface WorkoutTimerProps {
@@ -57,19 +57,21 @@ export default function WorkoutTimer({ onComplete, initialTime = 0 }: WorkoutTim
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.timerDisplay}>
-        <Text style={styles.timeText}>{formatTime(time)}</Text>
-        <Text style={styles.statusText}>
+    <View className="items-center rounded-2xl bg-white p-5 shadow" >
+      <View className="mb-5 items-center">
+        <Text className="font-mono text-5xl font-bold text-gray-800">
+          {formatTime(time)}
+        </Text>
+        <Text className="mt-2 text-base text-gray-500">
           {!isRunning ? 'Prêt' : isPaused ? 'En pause' : 'En cours'}
         </Text>
       </View>
-      
-      <View style={styles.controls}>
+
+      <View className="flex-row gap-4">
         {!isRunning || isPaused ? (
           <TouchableOpacity
             testID="start-button"
-            style={[styles.button, styles.playButton]}
+            className="h-14 w-14 items-center justify-center rounded-full bg-emerald-500"
             onPress={handleStart}
           >
             <Play size={20} color="white" />
@@ -77,7 +79,7 @@ export default function WorkoutTimer({ onComplete, initialTime = 0 }: WorkoutTim
         ) : (
           <TouchableOpacity
             testID="pause-button"
-            style={[styles.button, styles.pauseButton]}
+            className="h-14 w-14 items-center justify-center rounded-full bg-amber-500"
             onPress={handlePause}
           >
             <Pause size={20} color="white" />
@@ -86,7 +88,7 @@ export default function WorkoutTimer({ onComplete, initialTime = 0 }: WorkoutTim
 
         <TouchableOpacity
           testID="stop-button"
-          style={[styles.button, styles.stopButton]}
+          className="h-14 w-14 items-center justify-center rounded-full bg-red-500"
           onPress={handleStop}
         >
           <Square size={20} color="white" />
@@ -94,7 +96,7 @@ export default function WorkoutTimer({ onComplete, initialTime = 0 }: WorkoutTim
 
         <TouchableOpacity
           testID="reset-button"
-          style={[styles.button, styles.resetButton]}
+          className="h-14 w-14 items-center justify-center rounded-full bg-gray-100"
           onPress={handleReset}
         >
           <RotateCcw size={20} color="#6B7280" />
@@ -103,55 +105,3 @@ export default function WorkoutTimer({ onComplete, initialTime = 0 }: WorkoutTim
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  timerDisplay: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  timeText: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    fontFamily: 'monospace',
-  },
-  statusText: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginTop: 8,
-  },
-  controls: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  button: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  playButton: {
-    backgroundColor: '#10B981',
-  },
-  pauseButton: {
-    backgroundColor: '#F59E0B',
-  },
-  stopButton: {
-    backgroundColor: '#EF4444',
-  },
-  resetButton: {
-    backgroundColor: '#F3F4F6',
-  },
-});
