@@ -17,6 +17,7 @@ export default function Meals() {
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [todayMeals, setTodayMeals] = useState<FoodItem[]>([]);
   const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   useEffect(() => {
     getMeals().then(setTodayMeals);
@@ -327,13 +328,16 @@ export default function Meals() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (
+  colors: import('@/context/ThemeContext').ThemeColors
+) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.card,
     padding: 20,
     paddingTop: 60,
     borderBottomLeftRadius: 24,
@@ -342,16 +346,16 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 16,
   },
   progressContainer: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
   },
@@ -360,7 +364,7 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   progressValue: {
@@ -372,7 +376,7 @@ const styles = StyleSheet.create({
   progressBar: {
     width: '100%',
     height: 6,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 3,
     overflow: 'hidden',
   },
@@ -388,7 +392,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   mealTypeCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
@@ -406,7 +410,7 @@ const styles = StyleSheet.create({
   mealTypeLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   mealTypeLabelSelected: {
@@ -420,7 +424,7 @@ const styles = StyleSheet.create({
   mealTypeProgress: {
     width: '100%',
     height: 2,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 1,
     overflow: 'hidden',
   },
@@ -438,7 +442,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -447,10 +451,10 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#1F2937',
+    color: colors.text,
   },
   cameraButton: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
@@ -466,7 +470,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   quickActions: {
@@ -475,7 +479,7 @@ const styles = StyleSheet.create({
   },
   quickAction: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -484,11 +488,11 @@ const styles = StyleSheet.create({
   quickActionText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     textAlign: 'center',
   },
   suggestionCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -516,7 +520,7 @@ const styles = StyleSheet.create({
   suggestionName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   macroRow: {
@@ -525,30 +529,30 @@ const styles = StyleSheet.create({
   },
   macroText: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   macroSummary: {
     gap: 16,
   },
   macroSummaryItem: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
   },
   macroSummaryLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   macroSummaryValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 8,
   },
   macroSummaryProgress: {
     height: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 2,
     overflow: 'hidden',
   },
@@ -558,7 +562,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -566,14 +570,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     paddingTop: 60,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: colors.border,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
   },
   closeButton: {
     padding: 8,

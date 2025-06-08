@@ -610,7 +610,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   categoryLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   categoryLabelSelected: {
     color: '#10B981',
@@ -625,7 +625,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   quickStartContainer: {
@@ -653,24 +653,24 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   },
   createWorkoutCard: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     borderStyle: 'dashed',
   },
   createWorkoutText: {
-    color: '#6B7280',
+    color: colors.textSecondary,
     fontSize: 12,
     fontWeight: '600',
     marginTop: 8,
     textAlign: 'center',
   },
   workoutCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -703,12 +703,12 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   workoutName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   workoutDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   workoutMeta: {
@@ -723,7 +723,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   },
   metaText: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   difficultyBadge: {
     paddingHorizontal: 8,
@@ -735,7 +735,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     fontWeight: '600',
   },
   historyCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -762,12 +762,12 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   historyName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 2,
   },
   historyDate: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   historyMeta: {
@@ -779,7 +779,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     color: '#9CA3AF',
   },
   insightsCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     gap: 16,
@@ -792,12 +792,12 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   insightText: {
     flex: 1,
     fontSize: 14,
-    color: '#1F2937',
+    color: colors.text,
     lineHeight: 20,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -805,14 +805,14 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     alignItems: 'center',
     padding: 20,
     paddingTop: 60,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: colors.border,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
   },
   closeButton: {
     padding: 8,
@@ -827,11 +827,11 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   exercisesTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   exerciseItem: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -842,7 +842,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   exerciseName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     flex: 1,
   },
   exerciseDetails: {
@@ -855,18 +855,18 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   },
   exerciseRest: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#1F2937',
+    color: colors.text,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     marginBottom: 16,
   },
   sliderRow: {
@@ -874,7 +874,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   },
   sliderLabel: {
     fontSize: 14,
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 8,
   },
   slider: {
@@ -892,17 +892,17 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     justifyContent: 'center',
     padding: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     borderRadius: 12,
     marginHorizontal: 4,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
   },
   typeOptionSelected: {
     backgroundColor: '#10B981',
   },
   typeLabel: {
     marginLeft: 8,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   typeLabelSelected: {
     color: 'white',
@@ -911,17 +911,17 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     flex: 1,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     borderRadius: 12,
     marginHorizontal: 4,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
   },
   levelOptionSelected: {
     backgroundColor: '#10B981',
   },
   levelLabel: {
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   levelLabelSelected: {
     color: 'white',
@@ -935,10 +935,10 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   toggleLabel: {
     flex: 1,
     marginLeft: 8,
-    color: '#1F2937',
+    color: colors.text,
   },
   previewCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     marginBottom: 20,
@@ -947,12 +947,12 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   previewTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   previewText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   addButton: {
     backgroundColor: '#10B981',
