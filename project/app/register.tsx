@@ -1,53 +1,31 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
-import { useTheme } from '@/context/ThemeContext';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter, Link } from 'expo-router';
 import { useUser } from '@/context/UserContext';
+import { useTheme } from '@/context/ThemeContext';
 
-export default function AccountScreen() {
+export default function Register() {
+  const { register } = useUser();
   const { colors } = useTheme();
-  const { user, setUser } = useUser();
+  const router = useRouter();
 
-  if (!user) {
-    return null;
-  }
-
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [age, setAge] = useState(String(user.age));
-  const [height, setHeight] = useState(String(user.height));
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const styles = getStyles(colors);
 
-  const saveProfile = () => {
-    setUser((u) =>
-      u
-        ? {
-            ...u,
-            name,
-            email,
-            age: Number(age),
-            height: Number(height),
-          }
-        : u
-    );
+  const handleRegister = async () => {
+    await register(name, email, password);
+    router.replace('/');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mon compte</Text>
+      <Text style={styles.title}>Inscription</Text>
       <View style={styles.formRow}>
         <Text style={styles.label}>Nom</Text>
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-        />
+        <TextInput style={styles.input} value={name} onChangeText={setName} />
       </View>
       <View style={styles.formRow}>
         <Text style={styles.label}>Email</Text>
@@ -56,29 +34,22 @@ export default function AccountScreen() {
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          autoCapitalize="none"
         />
       </View>
       <View style={styles.formRow}>
-        <Text style={styles.label}>Âge</Text>
+        <Text style={styles.label}>Mot de passe</Text>
         <TextInput
           style={styles.input}
-          value={age}
-          onChangeText={setAge}
-          keyboardType="numeric"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
         />
       </View>
-      <View style={styles.formRow}>
-        <Text style={styles.label}>Taille (cm)</Text>
-        <TextInput
-          style={styles.input}
-          value={height}
-          onChangeText={setHeight}
-          keyboardType="numeric"
-        />
-      </View>
-      <TouchableOpacity style={styles.button} onPress={saveProfile}>
-        <Text style={styles.buttonText}>Sauvegarder</Text>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Créer le compte</Text>
       </TouchableOpacity>
+      <Link href="/login" style={styles.link}>Déjà inscrit ? Se connecter</Link>
     </View>
   );
 }
@@ -89,6 +60,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
       flex: 1,
       backgroundColor: colors.background,
       padding: 20,
+      justifyContent: 'center',
     },
     title: {
       fontSize: 24,
@@ -124,5 +96,10 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
       color: '#FFFFFF',
       fontWeight: '600',
       fontSize: 16,
+    },
+    link: {
+      marginTop: 16,
+      textAlign: 'center',
+      color: '#3B82F6',
     },
   });

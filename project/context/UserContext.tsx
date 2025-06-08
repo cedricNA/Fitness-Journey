@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import {
+  fakeLogin,
+  fakeRegister,
+  getPersistedUser,
+  clearPersistedUser,
+} from '../auth';
 
 export type UserGoal = 'weight_loss' | 'muscle_gain';
 
@@ -13,27 +19,45 @@ export interface User {
 }
 
 interface UserContextValue {
-  user: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  loading: boolean;
 }
 
-const defaultUser: User = {
-  name: 'Marie Dupont',
-  email: 'marie.dupont@email.com',
-  age: 28,
-  height: 165,
-  goal: 'weight_loss',
-  joinDate: '2024-01-01',
-  level: 'Intermédiaire',
-};
 
 const UserContext = createContext<UserContextValue | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User>(defaultUser);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPersistedUser().then((u) => {
+      setUser(u);
+      setLoading(false);
+    });
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const u = await fakeLogin(email, password);
+    setUser(u);
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    const u = await fakeRegister(name, email, password);
+    setUser(u);
+  };
+
+  const logout = async () => {
+    await clearPersistedUser();
+    setUser(null);
+  };
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, login, register, logout, loading }}>
       {children}
     </UserContext.Provider>
   );

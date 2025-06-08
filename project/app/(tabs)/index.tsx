@@ -68,7 +68,11 @@ export default function Dashboard() {
     >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: goalColors.secondary }]}>
-        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+        <TouchableOpacity
+          testID="toggle-theme"
+          onPress={toggleTheme}
+          style={styles.themeToggle}
+        >
           {theme === 'light' ? (
             <Moon size={24} color="#1F2937" />
           ) : (
@@ -82,7 +86,11 @@ export default function Dashboard() {
         
         <TouchableOpacity
           style={[styles.goalBadge, { backgroundColor: goalColors.primary }]}
-          onPress={() => setUser(u => ({ ...u, goal: u.goal === 'weight_loss' ? 'muscle_gain' : 'weight_loss' }))}
+          onPress={() =>
+            setUser((u) =>
+              u ? { ...u, goal: u.goal === 'weight_loss' ? 'muscle_gain' : 'weight_loss' } : u
+            )
+          }
         >
           <Text style={styles.goalText}>
             {user.goal === 'weight_loss' ? '🔥 Perte de poids' : '💪 Prise de masse'}
