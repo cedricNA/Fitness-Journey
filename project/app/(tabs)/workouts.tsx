@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal, TextInput } from 'react-native';
 import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X } from 'lucide-react-native';
 import WorkoutTimer from '@/components/WorkoutTimer';
 import { getWorkouts, saveWorkouts, WorkoutEntry } from '@/storage';
@@ -11,6 +11,9 @@ export default function Workouts() {
   const [showTimer, setShowTimer] = useState(false);
   const [activeWorkout, setActiveWorkout] = useState<any>(null);
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutEntry[]>([]);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newWorkoutName, setNewWorkoutName] = useState('');
+  const [newWorkoutDuration, setNewWorkoutDuration] = useState('');
 
   useEffect(() => {
     getWorkouts().then(setWorkoutHistory);
@@ -156,6 +159,26 @@ export default function Workouts() {
     startWorkout(expressWorkout);
   };
 
+  const createCustomWorkout = () => {
+    if (!newWorkoutName || !newWorkoutDuration) {
+      setShowCreateModal(false);
+      return;
+    }
+    const duration = parseInt(newWorkoutDuration, 10);
+    const customWorkout = {
+      name: newWorkoutName,
+      duration,
+      calories: Math.round(duration * 8),
+      type: 'custom',
+      description: "Entra\u00eenement personnalis\u00e9",
+      exercises: [] as any[],
+    };
+    setNewWorkoutName('');
+    setNewWorkoutDuration('');
+    setShowCreateModal(false);
+    startWorkout(customWorkout);
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -222,7 +245,10 @@ export default function Workouts() {
               <Text style={styles.quickStartText}>Workout Express</Text>
               <Text style={styles.quickStartSubtext}>15 min • Tous niveaux</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.createWorkoutCard}>
+            <TouchableOpacity
+              style={styles.createWorkoutCard}
+              onPress={() => setShowCreateModal(true)}
+            >
               <Plus size={24} color="#6B7280" />
               <Text style={styles.createWorkoutText}>Créer un entraînement</Text>
             </TouchableOpacity>
@@ -366,6 +392,47 @@ export default function Workouts() {
               </View>
             )}
           </ScrollView>
+        </View>
+      </Modal>
+
+      {/* Create Workout Modal */}
+      <Modal
+        visible={showCreateModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowCreateModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Nouvel entraînement</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowCreateModal(false)}
+            >
+              <X size={24} color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalContent}>
+            <TextInput
+              style={styles.input}
+              placeholder="Nom de l'entraînement"
+              value={newWorkoutName}
+              onChangeText={setNewWorkoutName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Durée (min)"
+              keyboardType="numeric"
+              value={newWorkoutDuration}
+              onChangeText={setNewWorkoutDuration}
+            />
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={createCustomWorkout}
+            >
+              <Text style={styles.addButtonText}>Démarrer</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </View>
@@ -690,5 +757,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     marginTop: 2,
+  },
+  input: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#1F2937',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginBottom: 16,
+  },
+  addButton: {
+    backgroundColor: '#10B981',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
