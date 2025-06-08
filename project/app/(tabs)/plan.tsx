@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { Utensils, Activity, Moon, Droplets, Brain, ChevronRight, Target } from 'lucide-react-native';
 import { useUser } from '@/context/UserContext';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
 export default function Plan() {
   const [activeTab, setActiveTab] = useState<'nutrition' | 'workout' | 'lifestyle'>('nutrition');
   const { user } = useUser();
+  const router = useRouter();
 
   const themeColors = {
     weight_loss: {
@@ -43,6 +45,13 @@ export default function Plan() {
       { name: 'Collation', calories: 200, suggestion: 'Pomme + amandes' },
       { name: 'Dîner', calories: 500, suggestion: 'Saumon grillé + légumes verts' }
     ]
+  };
+
+  const mealTypeMap: Record<string, string> = {
+    'Petit-déjeuner': 'breakfast',
+    'Déjeuner': 'lunch',
+    'Collation': 'snack',
+    'Dîner': 'dinner'
   };
 
   const workoutPlan = {
@@ -119,7 +128,11 @@ export default function Plan() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Suggestions de repas</Text>
         {nutritionPlan.meals.map((meal, index) => (
-          <TouchableOpacity key={index} style={styles.mealItem}>
+          <TouchableOpacity
+            key={index}
+            style={styles.mealItem}
+            onPress={() => router.push(`/meals?type=${mealTypeMap[meal.name]}`)}
+          >
             <View style={styles.mealInfo}>
               <Text style={styles.mealName}>{meal.name}</Text>
               <Text style={styles.mealSuggestion}>{meal.suggestion}</Text>
