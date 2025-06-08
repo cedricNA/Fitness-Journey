@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
-import { User, Settings, Bell, Moon, Globe, Award, Target, ChevronRight, CreditCard as Edit, Camera, Activity } from 'lucide-react-native';
+import { User, Settings, Bell, Globe, Award, Target, ChevronRight, CreditCard as Edit, Camera, Activity } from 'lucide-react-native';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'expo-router';
 
 export default function Profile() {
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const { user } = useUser();
   const router = useRouter();
 
@@ -35,7 +34,6 @@ export default function Profile() {
     {
       title: 'Paramètres',
       items: [
-        { label: 'Mode sombre', icon: Moon, hasSwitch: true, value: darkMode, onToggle: setDarkMode },
         { label: 'Langue', icon: Globe, value: preferences.language, onPress: () => router.push('/settings') },
         { label: 'Unités de mesure', icon: Settings, value: preferences.units, onPress: () => router.push('/settings') }
       ]

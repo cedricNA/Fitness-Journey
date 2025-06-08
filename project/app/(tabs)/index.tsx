@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { Plus, Target, Activity, Utensils, Award, ChevronRight } from 'lucide-react-native';
+import { Plus, Target, Activity, Utensils, Award, ChevronRight, Moon, Sun } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useUser } from '@/context/UserContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const { user, setUser } = useUser();
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [currentWeight] = useState(68);
   const [targetWeight] = useState(60);
   const [weeklyProgress] = useState(75);
@@ -42,9 +44,19 @@ export default function Dashboard() {
   ];
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={[styles.container, theme === 'dark' && styles.containerDark]}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.secondary }]}>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+          {theme === 'light' ? (
+            <Moon size={24} color="#1F2937" />
+          ) : (
+            <Sun size={24} color="#F9FAFB" />
+          )}
+        </TouchableOpacity>
         <View style={styles.welcomeSection}>
           <Text style={styles.welcomeText}>Bonjour {user.name.split(' ')[0]} 👋</Text>
           <Text style={styles.subtitle}>Prêt(e) à progresser aujourd'hui ?</Text>
@@ -120,11 +132,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9FAFB',
   },
+  containerDark: {
+    backgroundColor: '#1F2937',
+  },
   header: {
     padding: 20,
     paddingTop: 60,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
+  },
+  themeToggle: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
   },
   welcomeSection: {
     marginBottom: 16,
