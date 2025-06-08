@@ -86,7 +86,11 @@ export default function Dashboard() {
         
         <TouchableOpacity
           style={[styles.goalBadge, { backgroundColor: goalColors.primary }]}
-          onPress={() => setUser(u => ({ ...u, goal: u.goal === 'weight_loss' ? 'muscle_gain' : 'weight_loss' }))}
+          onPress={() =>
+            setUser((u) =>
+              u ? { ...u, goal: u.goal === 'weight_loss' ? 'muscle_gain' : 'weight_loss' } : u
+            )
+          }
         >
           <Text style={styles.goalText}>
             {user.goal === 'weight_loss' ? '🔥 Perte de poids' : '💪 Prise de masse'}
