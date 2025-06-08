@@ -6,8 +6,113 @@ import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, 
 import WorkoutTimer from '@/components/WorkoutTimer';
 import { getWorkouts, saveWorkouts, WorkoutEntry } from '@/storage';
 import { useTheme } from '@/context/ThemeContext';
+import { useUser, User } from '@/context/UserContext';
 
 const { width } = Dimensions.get('window');
+
+interface RecommendedWorkout {
+  name: string;
+  duration: number;
+  difficulty: string;
+  calories: number;
+  type: 'cardio' | 'strength' | 'flexibility';
+  description: string;
+  goal: User['goal'];
+  level: string;
+  exercises: { name: string; duration: number; rest: number }[];
+}
+
+const workoutsData: RecommendedWorkout[] = [
+  {
+    name: 'HIIT Brûle-graisse',
+    duration: 25,
+    difficulty: 'Intermédiaire',
+    calories: 250,
+    type: 'cardio',
+    description: 'Entraînement haute intensité pour brûler un maximum de calories',
+    goal: 'weight_loss',
+    level: 'Intermédiaire',
+    exercises: [
+      { name: 'Jumping Jacks', duration: 45, rest: 15 },
+      { name: 'Burpees', duration: 30, rest: 30 },
+      { name: 'Mountain Climbers', duration: 45, rest: 15 },
+      { name: 'High Knees', duration: 30, rest: 30 }
+    ]
+  },
+  {
+    name: 'Renforcement Core',
+    duration: 20,
+    difficulty: 'Débutant',
+    calories: 150,
+    type: 'strength',
+    description: 'Exercices ciblés pour renforcer vos abdominaux et votre dos',
+    goal: 'muscle_gain',
+    level: 'Débutant',
+    exercises: [
+      { name: 'Planche', duration: 30, rest: 30 },
+      { name: 'Crunchs', duration: 45, rest: 15 },
+      { name: 'Russian Twists', duration: 30, rest: 30 },
+      { name: 'Dead Bug', duration: 45, rest: 15 }
+    ]
+  },
+  {
+    name: 'Cardio Dance',
+    duration: 35,
+    difficulty: 'Débutant',
+    calories: 200,
+    type: 'cardio',
+    description: 'Dansez tout en brûlant des calories, idéal pour le fun !',
+    goal: 'weight_loss',
+    level: 'Débutant',
+    exercises: [
+      { name: 'Échauffement', duration: 300, rest: 0 },
+      { name: 'Chorégraphie 1', duration: 480, rest: 60 },
+      { name: 'Chorégraphie 2', duration: 480, rest: 60 },
+      { name: 'Cool down', duration: 180, rest: 0 }
+    ]
+  },
+  {
+    name: 'Upper Body Power',
+    duration: 40,
+    difficulty: 'Avancé',
+    calories: 280,
+    type: 'strength',
+    description: 'Développez la force du haut du corps avec des exercices intenses',
+    goal: 'muscle_gain',
+    level: 'Avancé',
+    exercises: [
+      { name: 'Pompes', duration: 45, rest: 15 },
+      { name: 'Dips', duration: 30, rest: 30 },
+      { name: 'Pike Push-ups', duration: 30, rest: 30 },
+      { name: 'Planche latérale', duration: 30, rest: 30 }
+    ]
+  },
+  {
+    name: 'Yoga Flow',
+    duration: 30,
+    difficulty: 'Débutant',
+    calories: 120,
+    type: 'flexibility',
+    description: 'Séance de yoga relaxante pour améliorer votre flexibilité',
+    goal: 'weight_loss',
+    level: 'Débutant',
+    exercises: [
+      { name: 'Salutation au soleil', duration: 300, rest: 0 },
+      { name: 'Postures debout', duration: 600, rest: 0 },
+      { name: 'Postures assises', duration: 600, rest: 0 },
+      { name: 'Relaxation', duration: 300, rest: 0 }
+    ]
+  }
+];
+
+function getRecommendedWorkouts(user: User | null): RecommendedWorkout[] {
+  if (!user) {
+    return workoutsData;
+  }
+  return workoutsData.filter(
+    (w) => w.goal === user.goal && (w.level === user.level || w.level === 'Débutant')
+  );
+}
 
 export default function Workouts() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'cardio' | 'strength' | 'flexibility'>('all');
@@ -43,78 +148,13 @@ export default function Workouts() {
     { key: 'flexibility', label: 'Souplesse', emoji: '🧘' }
   ];
 
-  const recommendedWorkouts = [
-    {
-      name: 'HIIT Brûle-graisse',
-      duration: 25,
-      difficulty: 'Intermédiaire',
-      calories: 250,
-      type: 'cardio',
-      description: 'Entraînement haute intensité pour brûler un maximum de calories',
-      exercises: [
-        { name: 'Jumping Jacks', duration: 45, rest: 15 },
-        { name: 'Burpees', duration: 30, rest: 30 },
-        { name: 'Mountain Climbers', duration: 45, rest: 15 },
-        { name: 'High Knees', duration: 30, rest: 30 }
-      ]
-    },
-    {
-      name: 'Renforcement Core',
-      duration: 20,
-      difficulty: 'Débutant',
-      calories: 150,
-      type: 'strength',
-      description: 'Exercices ciblés pour renforcer vos abdominaux et votre dos',
-      exercises: [
-        { name: 'Planche', duration: 30, rest: 30 },
-        { name: 'Crunchs', duration: 45, rest: 15 },
-        { name: 'Russian Twists', duration: 30, rest: 30 },
-        { name: 'Dead Bug', duration: 45, rest: 15 }
-      ]
-    },
-    {
-      name: 'Cardio Dance',
-      duration: 35,
-      difficulty: 'Débutant',
-      calories: 200,
-      type: 'cardio',
-      description: 'Dansez tout en brûlant des calories, idéal pour le fun !',
-      exercises: [
-        { name: 'Échauffement', duration: 300, rest: 0 },
-        { name: 'Chorégraphie 1', duration: 480, rest: 60 },
-        { name: 'Chorégraphie 2', duration: 480, rest: 60 },
-        { name: 'Cool down', duration: 180, rest: 0 }
-      ]
-    },
-    {
-      name: 'Upper Body Power',
-      duration: 40,
-      difficulty: 'Avancé',
-      calories: 280,
-      type: 'strength',
-      description: 'Développez la force du haut du corps avec des exercices intenses',
-      exercises: [
-        { name: 'Pompes', duration: 45, rest: 15 },
-        { name: 'Dips', duration: 30, rest: 30 },
-        { name: 'Pike Push-ups', duration: 30, rest: 30 },
-        { name: 'Planche latérale', duration: 30, rest: 30 }
-      ]
-    },
-    {
-      name: 'Yoga Flow',
-      duration: 30,
-      difficulty: 'Débutant',
-      calories: 120,
-      type: 'flexibility',
-      description: 'Séance de yoga relaxante pour améliorer votre flexibilité',
-      exercises: [
-        { name: 'Salutation au soleil', duration: 300, rest: 0 },
-        { name: 'Postures debout', duration: 600, rest: 0 },
-        { name: 'Postures assises', duration: 600, rest: 0 },
-        { name: 'Relaxation', duration: 300, rest: 0 }
-      ]
-    }
-  ];
+  const { user, loading } = useUser();
+
+  if (loading || !user) {
+    return null;
+  }
+
+  const recommendedWorkouts = getRecommendedWorkouts(user);
 
   const weeklyStats = {
     workouts: 4,

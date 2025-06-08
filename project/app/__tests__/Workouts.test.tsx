@@ -23,6 +23,18 @@ jest.mock('@/context/ThemeContext', () => {
   };
 });
 
+jest.mock('@/context/UserContext', () => {
+  const React = require('react');
+  return {
+    UserProvider: ({ children }: any) => <>{children}</>,
+    useUser: () => ({
+      user: { name: 'John Doe', goal: 'weight_loss', level: 'Débutant' },
+      setUser: jest.fn(),
+      loading: false
+    })
+  };
+});
+
 jest.mock('@/storage', () => ({
   getWorkouts: jest.fn(() => Promise.resolve([])),
   saveWorkouts: jest.fn()
