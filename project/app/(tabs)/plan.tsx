@@ -9,9 +9,13 @@ const { width } = Dimensions.get('window');
 
 export default function Plan() {
   const [activeTab, setActiveTab] = useState<'nutrition' | 'workout' | 'lifestyle'>('nutrition');
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const router = useRouter();
   const { colors } = useTheme();
+
+  if (loading || !user) {
+    return null;
+  }
 
   const goalPalettes = {
     weight_loss: {

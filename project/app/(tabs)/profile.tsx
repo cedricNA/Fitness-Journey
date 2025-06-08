@@ -7,10 +7,14 @@ import { useTheme } from '@/context/ThemeContext';
 
 export default function Profile() {
   const [notifications, setNotifications] = useState(true);
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const router = useRouter();
   const { colors } = useTheme();
   const styles = getStyles(colors);
+
+  if (loading || !user) {
+    return null;
+  }
 
   const [preferences] = useState({
     dietType: 'Équilibrée',
