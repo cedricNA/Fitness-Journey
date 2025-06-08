@@ -67,20 +67,36 @@ export default function WorkoutTimer({ onComplete, initialTime = 0 }: WorkoutTim
       
       <View style={styles.controls}>
         {!isRunning || isPaused ? (
-          <TouchableOpacity style={[styles.button, styles.playButton]} onPress={handleStart}>
+          <TouchableOpacity
+            testID="start-button"
+            style={[styles.button, styles.playButton]}
+            onPress={handleStart}
+          >
             <Play size={20} color="white" />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={[styles.button, styles.pauseButton]} onPress={handlePause}>
+          <TouchableOpacity
+            testID="pause-button"
+            style={[styles.button, styles.pauseButton]}
+            onPress={handlePause}
+          >
             <Pause size={20} color="white" />
           </TouchableOpacity>
         )}
-        
-        <TouchableOpacity style={[styles.button, styles.stopButton]} onPress={handleStop}>
+
+        <TouchableOpacity
+          testID="stop-button"
+          style={[styles.button, styles.stopButton]}
+          onPress={handleStop}
+        >
           <Square size={20} color="white" />
         </TouchableOpacity>
-        
-        <TouchableOpacity style={[styles.button, styles.resetButton]} onPress={handleReset}>
+
+        <TouchableOpacity
+          testID="reset-button"
+          style={[styles.button, styles.resetButton]}
+          onPress={handleReset}
+        >
           <RotateCcw size={20} color="#6B7280" />
         </TouchableOpacity>
       </View>
