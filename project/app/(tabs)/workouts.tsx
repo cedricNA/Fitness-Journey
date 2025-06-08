@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal, TextInput, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal, TextInput, Switch, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X, Dumbbell, StretchHorizontal, Bookmark, Repeat } from 'lucide-react-native';
 import WorkoutTimer from '@/components/WorkoutTimer';
@@ -19,6 +20,7 @@ export default function Workouts() {
   const [newWorkoutType, setNewWorkoutType] = useState<'cardio' | 'strength' | 'flexibility'>('cardio');
   const [newWorkoutLevel, setNewWorkoutLevel] = useState<'Débutant' | 'Intermédiaire' | 'Avancé'>('Débutant');
   const { colors } = useTheme();
+  const router = useRouter();
   const styles = getStyles(colors);
   const [newWorkoutCalories, setNewWorkoutCalories] = useState(240);
   const [newWorkoutEquipment, setNewWorkoutEquipment] = useState('');
@@ -272,6 +274,7 @@ export default function Workouts() {
             >
               <Plus size={24} color="#6B7280" />
               <Text style={styles.createWorkoutText}>Créer un entraînement</Text>
+              <Text style={styles.createWorkoutSubtitle}>Personnalise ta séance !</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -283,10 +286,13 @@ export default function Workouts() {
             {selectedCategory !== 'all' && ` • ${categories.find(c => c.key === selectedCategory)?.label}`}
           </Text>
           {filteredWorkouts.map((workout, index) => (
-            <TouchableOpacity 
-              key={index} 
-              style={styles.workoutCard}
+            <Pressable
+              key={index}
               onPress={() => startWorkout(workout)}
+              style={({ pressed }) => [
+                styles.workoutCard,
+                pressed && { transform: [{ scale: 0.97 }] },
+              ]}
             >
               <View style={styles.workoutLeft}>
                 <View style={styles.workoutIcon}>
@@ -313,15 +319,15 @@ export default function Workouts() {
                 </View>
               </View>
               <Play size={20} color="#10B981" />
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
 
         {/* Workout History */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Historique récent</Text>
-          {workoutHistory.map((workout) => (
-            <View key={workout.id} style={styles.historyCard}>
+        {workoutHistory.map((workout) => (
+          <View key={workout.id} style={styles.historyCard}>
               <View style={styles.historyLeft}>
                 <View style={styles.historyStatus}>
                   <View style={[styles.statusIndicator, { backgroundColor: '#10B981' }]} />
@@ -342,9 +348,15 @@ export default function Workouts() {
                 </View>
               </View>
               <ChevronRight size={16} color="#9CA3AF" />
-            </View>
-          ))}
-        </View>
+          </View>
+        ))}
+        <TouchableOpacity
+          style={styles.historyButton}
+          onPress={() => router.push('/history')}
+        >
+          <Text style={styles.historyButtonText}>Voir tout l'historique</Text>
+        </TouchableOpacity>
+      </View>
 
         {/* Progress Insights */}
         <View style={styles.section}>
@@ -663,10 +675,16 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     borderStyle: 'dashed',
   },
   createWorkoutText: {
-    color: colors.textSecondary,
+    color: colors.text,
     fontSize: 12,
     fontWeight: '600',
     marginTop: 8,
+    textAlign: 'center',
+  },
+  createWorkoutSubtitle: {
+    color: colors.textSecondary,
+    fontSize: 10,
+    marginTop: 4,
     textAlign: 'center',
   },
   workoutCard: {
@@ -708,7 +726,7 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
   },
   workoutDescription: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: colors.text,
     marginBottom: 8,
   },
   workoutMeta: {
@@ -964,5 +982,14 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  historyButton: {
+    marginTop: 8,
+    padding: 12,
+    alignItems: 'center',
+  },
+  historyButtonText: {
+    color: '#10B981',
+    fontWeight: '600',
   },
 });
