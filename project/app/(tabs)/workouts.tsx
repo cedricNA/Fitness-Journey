@@ -19,6 +19,7 @@ export default function Workouts() {
   const [newWorkoutType, setNewWorkoutType] = useState<'cardio' | 'strength' | 'flexibility'>('cardio');
   const [newWorkoutLevel, setNewWorkoutLevel] = useState<'Débutant' | 'Intermédiaire' | 'Avancé'>('Débutant');
   const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [newWorkoutCalories, setNewWorkoutCalories] = useState(240);
   const [newWorkoutEquipment, setNewWorkoutEquipment] = useState('');
   const [newWorkoutDescription, setNewWorkoutDescription] = useState('');
@@ -537,13 +538,14 @@ export default function Workouts() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: '#D1FAE5',
+    backgroundColor: colors.secondary || '#D1FAE5',
     padding: 20,
     paddingTop: 60,
     borderBottomLeftRadius: 24,
@@ -552,17 +554,17 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 20,
   },
   statsContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     gap: 12,
@@ -575,11 +577,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   categoryContainer: {
@@ -590,7 +592,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   categoryCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',

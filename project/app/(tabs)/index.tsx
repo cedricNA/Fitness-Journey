@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { Plus, Target, Activity, Utensils, Award, ChevronRight, Moon, Sun } from 'lucide-react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import {
+  Plus,
+  Target,
+  Activity,
+  Utensils,
+  Award,
+  ChevronRight,
+  Moon,
+  Sun,
+} from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useUser } from '@/context/UserContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -15,7 +31,7 @@ export default function Dashboard() {
   const [targetWeight] = useState(60);
   const [weeklyProgress] = useState(75);
 
-  const themeColors = {
+  const goalPalettes = {
     weight_loss: {
       primary: '#EF4444',
       secondary: '#FEE2E2',
@@ -28,7 +44,9 @@ export default function Dashboard() {
     }
   };
 
-  const colors = themeColors[user.goal];
+  const goalColors = goalPalettes[user.goal];
+
+  const styles = getStyles(colors, goalColors);
 
   const stats = [
     { label: 'Poids actuel', value: `${currentWeight} kg`, progress: ((targetWeight / currentWeight) * 100) },
@@ -40,7 +58,7 @@ export default function Dashboard() {
   const quickActions = [
     { title: 'Ajouter un repas', icon: Utensils, color: '#F59E0B', href: '/meals' },
     { title: 'Nouvelle séance', icon: Activity, color: '#8B5CF6', href: '/workouts' },
-    { title: 'Consulter le plan', icon: Target, color: colors.primary, href: '/plan' }
+    { title: 'Consulter le plan', icon: Target, color: goalColors.primary, href: '/plan' }
   ];
 
   return (
@@ -49,7 +67,7 @@ export default function Dashboard() {
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.secondary }]}>
+      <View style={[styles.header, { backgroundColor: goalColors.secondary }]}>
         <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
           {theme === 'light' ? (
             <Moon size={24} color="#1F2937" />
@@ -63,7 +81,7 @@ export default function Dashboard() {
         </View>
         
         <TouchableOpacity
-          style={[styles.goalBadge, { backgroundColor: colors.primary }]}
+          style={[styles.goalBadge, { backgroundColor: goalColors.primary }]}
           onPress={() => setUser(u => ({ ...u, goal: u.goal === 'weight_loss' ? 'muscle_gain' : 'weight_loss' }))}
         >
           <Text style={styles.goalText}>
@@ -79,12 +97,12 @@ export default function Dashboard() {
           {stats.map((stat, index) => (
             <View key={index} style={[styles.statCard, { backgroundColor: colors.card }]}>
               <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{stat.label}</Text>
-              <Text style={[styles.statValue, { color: colors.primary }]}>{stat.value}</Text>
+              <Text style={[styles.statValue, { color: goalColors.primary }]}>{stat.value}</Text>
               <View style={[styles.progressBar, { backgroundColor: colors.border }]}>
                 <View 
                   style={[
                     styles.progressFill, 
-                    { width: `${stat.progress}%`, backgroundColor: colors.primary }
+                    { width: `${stat.progress}%`, backgroundColor: goalColors.primary }
                   ]} 
                 />
               </View>
@@ -127,10 +145,14 @@ export default function Dashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (
+  theme: import('@/context/ThemeContext').ThemeColors,
+  goal: { primary: string; secondary: string; accent: string }
+) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.background,
   },
   header: {
     padding: 20,
@@ -149,12 +171,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: theme.text,
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: theme.textSecondary,
   },
   goalBadge: {
     paddingHorizontal: 16,
@@ -173,7 +195,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: theme.text,
     marginBottom: 16,
   },
   statsGrid: {
@@ -182,7 +204,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   statCard: {
-    backgroundColor: 'white',
+    backgroundColor: theme.card,
     padding: 16,
     borderRadius: 12,
     width: (width - 52) / 2,
@@ -194,7 +216,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: theme.textSecondary,
     marginBottom: 4,
   },
   statValue: {
@@ -204,7 +226,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.border,
     borderRadius: 2,
     overflow: 'hidden',
   },
@@ -217,7 +239,7 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   actionCard: {
-    backgroundColor: 'white',
+    backgroundColor: theme.card,
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -245,29 +267,29 @@ const styles = StyleSheet.create({
   actionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: theme.text,
   },
   achievementContainer: {
     padding: 20,
     paddingTop: 0,
   },
   achievementCard: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: goal.secondary,
     padding: 20,
     borderRadius: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: theme.border,
   },
   achievementTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#92400E',
+    color: goal.accent,
     marginTop: 8,
   },
   achievementText: {
     fontSize: 14,
-    color: '#B45309',
+    color: goal.accent,
     textAlign: 'center',
     marginTop: 4,
   },

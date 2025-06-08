@@ -11,6 +11,7 @@ export default function Progress() {
   const [activeTab, setActiveTab] = useState<'weight' | 'measurements' | 'photos'>('weight');
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | '3months'>('month');
   const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const tabs = [
     { id: 'weight', title: 'Poids', icon: Scale },
@@ -302,13 +303,14 @@ export default function Progress() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: '#E0E7FF',
+    backgroundColor: colors.secondary || '#E0E7FF',
     padding: 20,
     paddingTop: 60,
     borderBottomLeftRadius: 24,
@@ -317,12 +319,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -337,26 +339,26 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     gap: 6,
   },
   tabActive: {
-    backgroundColor: '#D1FAE5',
+    backgroundColor: colors.card,
   },
   tabText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#9CA3AF',
+    color: colors.textSecondary,
   },
   tabTextActive: {
-    color: '#10B981',
+    color: colors.text,
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -369,12 +371,12 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   cardDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 16,
   },
   weightOverview: {
@@ -404,24 +406,24 @@ const styles = StyleSheet.create({
   },
   weightStatLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   weightStatValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   progressContainer: {
     marginTop: 20,
   },
   progressLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
@@ -480,7 +482,7 @@ const styles = StyleSheet.create({
   },
   bmiDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
     fontStyle: 'italic',
   },
@@ -490,17 +492,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: colors.border,
   },
   measurementLeft: {},
   measurementName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   measurementValue: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   measurementRight: {
@@ -512,20 +514,20 @@ const styles = StyleSheet.create({
   },
   measurementInitial: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   addMeasurementButton: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     borderStyle: 'dashed',
   },
   addMeasurementText: {
-    color: '#6B7280',
+    color: colors.textSecondary,
     fontWeight: '600',
   },
   photoGrid: {
@@ -551,29 +553,29 @@ const styles = StyleSheet.create({
   },
   photoDate: {
     fontSize: 10,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   photoSlot: {
     width: (width - 84) / 2,
     height: 120,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     borderStyle: 'dashed',
   },
   photoSlotText: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginTop: 8,
     textAlign: 'center',
   },
   tipText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     lineHeight: 20,
     marginBottom: 8,
   },
@@ -583,11 +585,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   achievementCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -606,11 +608,11 @@ const styles = StyleSheet.create({
   achievementTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   achievementDate: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 2,
   },
 });
