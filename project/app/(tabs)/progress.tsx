@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { TrendingUp, Camera, Calendar, Target, Award, ChevronRight, Scale, Ruler } from 'lucide-react-native';
 import ProgressChart from '@/components/ProgressChart';
+import AddWeightModal from '@/components/AddWeightModal';
 import { getWeights, WeightEntry } from '@/storage';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -26,6 +27,7 @@ export default function Progress() {
   ];
 
   const [weightData, setWeightData] = useState<WeightEntry[]>([]);
+  const [showAddWeight, setShowAddWeight] = useState(false);
 
   useEffect(() => {
     getWeights().then((data) => {
@@ -156,6 +158,15 @@ export default function Progress() {
         <Text style={styles.bmiDescription}>
           Votre IMC est dans la plage normale. Continuez sur cette voie !
         </Text>
+      </View>
+
+      <View style={styles.card}>
+        <TouchableOpacity
+          style={styles.addWeightButton}
+          onPress={() => setShowAddWeight(true)}
+        >
+          <Text style={styles.addWeightText}>+ Nouveau poids</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -299,6 +310,12 @@ export default function Progress() {
           ))}
         </View>
       </ScrollView>
+
+      <AddWeightModal
+        visible={showAddWeight}
+        onClose={() => setShowAddWeight(false)}
+        onSaved={setWeightData}
+      />
     </View>
   );
 }
@@ -527,6 +544,19 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     borderStyle: 'dashed',
   },
   addMeasurementText: {
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  addWeightButton: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderStyle: 'dashed',
+  },
+  addWeightText: {
     color: colors.textSecondary,
     fontWeight: '600',
   },
