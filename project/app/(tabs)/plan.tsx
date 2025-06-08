@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from
 import { Utensils, Activity, Moon, Droplets, Brain, ChevronRight, Target } from 'lucide-react-native';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -10,6 +11,7 @@ export default function Plan() {
   const [activeTab, setActiveTab] = useState<'nutrition' | 'workout' | 'lifestyle'>('nutrition');
   const { user } = useUser();
   const router = useRouter();
+  const { colors } = useTheme();
 
   const themeColors = {
     weight_loss: {
@@ -75,8 +77,8 @@ export default function Plan() {
   const renderNutritionTab = () => (
     <View>
       {/* Calories Overview */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Objectif calorique quotidien</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Objectif calorique quotidien</Text>
         <View style={styles.calorieContainer}>
           <Text style={[styles.calorieNumber, { color: colors.primary }]}>
             {nutritionPlan.calories.current}
@@ -97,8 +99,8 @@ export default function Plan() {
       </View>
 
       {/* Macros */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Répartition des macronutriments</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Répartition des macronutriments</Text>
         <View style={styles.macrosContainer}>
           {Object.entries(nutritionPlan.macros).map(([key, macro]) => (
             <View key={key} style={styles.macroItem}>
@@ -125,8 +127,8 @@ export default function Plan() {
       </View>
 
       {/* Meal Suggestions */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Suggestions de repas</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Suggestions de repas</Text>
         {nutritionPlan.meals.map((meal, index) => (
           <TouchableOpacity
             key={index}
@@ -150,8 +152,8 @@ export default function Plan() {
   const renderWorkoutTab = () => (
     <View>
       {/* Weekly Progress */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Progression hebdomadaire</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Progression hebdomadaire</Text>
         <View style={styles.workoutProgress}>
           <Text style={[styles.workoutNumber, { color: colors.primary }]}>
             {workoutPlan.completed} / {workoutPlan.weeklyGoal}
@@ -172,8 +174,8 @@ export default function Plan() {
       </View>
 
       {/* Weekly Schedule */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Planning de la semaine</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Planning de la semaine</Text>
         {workoutPlan.sessions.map((session, index) => (
           <TouchableOpacity key={index} style={styles.sessionItem}>
             <View style={styles.sessionLeft}>
@@ -196,8 +198,8 @@ export default function Plan() {
 
   const renderLifestyleTab = () => (
     <View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Conseils bien-être</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Conseils bien-être</Text>
         {lifestyleTips.map((tip, index) => (
           <View key={index} style={styles.tipItem}>
             <View style={styles.tipHeader}>
@@ -218,11 +220,11 @@ export default function Plan() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.secondary }]}>
-        <Text style={styles.headerTitle}>Mon Plan Personnalisé</Text>
-        <Text style={styles.headerSubtitle}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Mon Plan Personnalisé</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
           Optimisé pour votre objectif de {user.goal === 'weight_loss' ? 'perte de poids' : 'prise de masse'}
         </Text>
       </View>

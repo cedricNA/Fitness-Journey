@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { Plus, Target, Activity, Utensils, Award, ChevronRight } from 'lucide-react-native';
+import { Plus, Target, Activity, Utensils, Award, ChevronRight, Moon, Sun } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useUser } from '@/context/UserContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const { user, setUser } = useUser();
   const router = useRouter();
+  const { theme, toggleTheme, colors } = useTheme();
   const [currentWeight] = useState(68);
   const [targetWeight] = useState(60);
   const [weeklyProgress] = useState(75);
@@ -42,12 +44,22 @@ export default function Dashboard() {
   ];
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.secondary }]}>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+          {theme === 'light' ? (
+            <Moon size={24} color="#1F2937" />
+          ) : (
+            <Sun size={24} color="#F9FAFB" />
+          )}
+        </TouchableOpacity>
         <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeText}>Bonjour {user.name.split(' ')[0]} 👋</Text>
-          <Text style={styles.subtitle}>Prêt(e) à progresser aujourd'hui ?</Text>
+          <Text style={[styles.welcomeText, { color: colors.text }]}>Bonjour {user.name.split(' ')[0]} 👋</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Prêt(e) à progresser aujourd'hui ?</Text>
         </View>
         
         <TouchableOpacity
@@ -62,13 +74,13 @@ export default function Dashboard() {
 
       {/* Stats Cards */}
       <View style={styles.statsContainer}>
-        <Text style={styles.sectionTitle}>Votre progression</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Votre progression</Text>
         <View style={styles.statsGrid}>
           {stats.map((stat, index) => (
-            <View key={index} style={styles.statCard}>
-              <Text style={styles.statLabel}>{stat.label}</Text>
+            <View key={index} style={[styles.statCard, { backgroundColor: colors.card }]}>
+              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{stat.label}</Text>
               <Text style={[styles.statValue, { color: colors.primary }]}>{stat.value}</Text>
-              <View style={styles.progressBar}>
+              <View style={[styles.progressBar, { backgroundColor: colors.border }]}>
                 <View 
                   style={[
                     styles.progressFill, 
@@ -83,18 +95,18 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <View style={styles.actionsContainer}>
-        <Text style={styles.sectionTitle}>Actions rapides</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Actions rapides</Text>
         {quickActions.map((action, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.actionCard}
+            style={[styles.actionCard, { backgroundColor: colors.card }]}
             onPress={() => router.push(action.href)}
           >
             <View style={styles.actionLeft}>
               <View style={[styles.iconContainer, { backgroundColor: action.color + '20' }]}>
                 <action.icon size={24} color={action.color} />
               </View>
-              <Text style={styles.actionTitle}>{action.title}</Text>
+              <Text style={[styles.actionTitle, { color: colors.text }]}>{action.title}</Text>
             </View>
             <ChevronRight size={20} color="#9CA3AF" />
           </TouchableOpacity>
@@ -125,6 +137,11 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
+  },
+  themeToggle: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
   },
   welcomeSection: {
     marginBottom: 16,

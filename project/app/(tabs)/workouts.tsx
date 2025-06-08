@@ -4,6 +4,7 @@ import Slider from '@react-native-community/slider';
 import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X, Dumbbell, StretchHorizontal, Bookmark, Repeat } from 'lucide-react-native';
 import WorkoutTimer from '@/components/WorkoutTimer';
 import { getWorkouts, saveWorkouts, WorkoutEntry } from '@/storage';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -17,6 +18,7 @@ export default function Workouts() {
   const [newWorkoutDuration, setNewWorkoutDuration] = useState(30);
   const [newWorkoutType, setNewWorkoutType] = useState<'cardio' | 'strength' | 'flexibility'>('cardio');
   const [newWorkoutLevel, setNewWorkoutLevel] = useState<'Débutant' | 'Intermédiaire' | 'Avancé'>('Débutant');
+  const { colors } = useTheme();
   const [newWorkoutCalories, setNewWorkoutCalories] = useState(240);
   const [newWorkoutEquipment, setNewWorkoutEquipment] = useState('');
   const [newWorkoutDescription, setNewWorkoutDescription] = useState('');
@@ -198,11 +200,11 @@ export default function Workouts() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }] }>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mes Entraînements</Text>
-        <Text style={styles.headerSubtitle}>Restez actif et atteignez vos objectifs</Text>
+      <View style={[styles.header, { backgroundColor: colors.secondary || '#FEE2E2' }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Mes Entraînements</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Restez actif et atteignez vos objectifs</Text>
         
         {/* Weekly Stats */}
         <View style={styles.statsContainer}>

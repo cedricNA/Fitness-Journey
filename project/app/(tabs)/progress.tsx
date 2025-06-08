@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image
 import { TrendingUp, Camera, Calendar, Target, Award, ChevronRight, Scale, Ruler } from 'lucide-react-native';
 import ProgressChart from '@/components/ProgressChart';
 import { getWeights, WeightEntry } from '@/storage';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 export default function Progress() {
   const [activeTab, setActiveTab] = useState<'weight' | 'measurements' | 'photos'>('weight');
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | '3months'>('month');
+  const { colors } = useTheme();
 
   const tabs = [
     { id: 'weight', title: 'Poids', icon: Scale },
@@ -242,11 +244,11 @@ export default function Progress() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mes Progrès</Text>
-        <Text style={styles.headerSubtitle}>Suivez votre transformation</Text>
+      <View style={[styles.header, { backgroundColor: colors.secondary || '#E0E7FF' }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Mes Progrès</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Suivez votre transformation</Text>
       </View>
 
       {/* Tabs */}
