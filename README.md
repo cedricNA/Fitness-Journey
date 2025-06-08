@@ -41,3 +41,13 @@ Cette commande démarre Expo et permet de lancer l'application sur un simulateur
 - `npm run build:web` : génère la version web dans `dist/`
 
 
+## Testing
+
+Pour vérifier la compilation TypeScript et exécuter les tests, assurez-vous d'abord d'installer les dépendances dans le dossier `project` :
+
+```bash
+cd project
+npm install
+npx tsc --noEmit
+npm test
+```
