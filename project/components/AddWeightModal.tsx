@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, TextInput } from 'react-native';
 import { X } from 'lucide-react-native';
 import { getWeights, saveWeights, WeightEntry } from '@/storage';
 import { useTheme } from '@/context/ThemeContext';
@@ -12,7 +12,6 @@ interface AddWeightModalProps {
 
 export default function AddWeightModal({ visible, onClose, onSaved }: AddWeightModalProps) {
   const { colors } = useTheme();
-  const styles = getStyles(colors);
   const [value, setValue] = useState('');
 
   const handleSave = async () => {
@@ -36,23 +35,34 @@ export default function AddWeightModal({ visible, onClose, onSaved }: AddWeightM
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Ajouter un poids</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+      <View className="flex-1" style={{ backgroundColor: colors.background }}>
+        <View
+          className="flex-row items-center justify-between border-b p-5 pt-16"
+          style={{ backgroundColor: colors.card, borderColor: colors.border }}
+        >
+          <Text className="text-lg font-bold" style={{ color: colors.text }}>
+            Ajouter un poids
+          </Text>
+          <TouchableOpacity className="p-2" onPress={onClose}>
             <X size={24} color="#6B7280" />
           </TouchableOpacity>
         </View>
-        <View style={styles.content}>
+        <View className="flex-1 p-5">
           <TextInput
-            style={styles.input}
+            className="mb-4 rounded-xl border px-4 py-3 text-base"
+            style={{ borderColor: colors.border, backgroundColor: colors.card, color: colors.text }}
             placeholder="Poids (kg)"
             keyboardType="numeric"
             value={value}
             onChangeText={setValue}
           />
-          <TouchableOpacity style={[styles.addButton, { opacity: value ? 1 : 0.5 }]} onPress={handleSave} disabled={!value}>
-            <Text style={styles.addButtonText}>Enregistrer</Text>
+          <TouchableOpacity
+            className="items-center rounded-xl bg-emerald-500 p-4"
+            style={{ opacity: value ? 1 : 0.5 }}
+            onPress={handleSave}
+            disabled={!value}
+          >
+            <Text className="text-base font-bold text-white">Enregistrer</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -60,54 +70,3 @@ export default function AddWeightModal({ visible, onClose, onSaved }: AddWeightM
   );
 }
 
-const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 20,
-      paddingTop: 60,
-      backgroundColor: colors.card,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: colors.text,
-    },
-    closeButton: {
-      padding: 8,
-    },
-    content: {
-      flex: 1,
-      padding: 20,
-    },
-    input: {
-      backgroundColor: colors.card,
-      borderRadius: 12,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      fontSize: 16,
-      color: colors.text,
-      borderWidth: 1,
-      borderColor: colors.border,
-      marginBottom: 16,
-    },
-    addButton: {
-      backgroundColor: '#10B981',
-      borderRadius: 12,
-      padding: 16,
-      alignItems: 'center',
-    },
-    addButtonText: {
-      color: 'white',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-  });
