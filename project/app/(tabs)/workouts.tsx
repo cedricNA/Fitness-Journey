@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal, TextInput } from 'react-native';
-import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X } from 'lucide-react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal, TextInput, Switch } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X, Dumbbell, StretchHorizontal, Bookmark, Repeat } from 'lucide-react-native';
 import WorkoutTimer from '@/components/WorkoutTimer';
 import { getWorkouts, saveWorkouts, WorkoutEntry } from '@/storage';
 
@@ -13,11 +14,22 @@ export default function Workouts() {
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutEntry[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState('');
-  const [newWorkoutDuration, setNewWorkoutDuration] = useState('');
+  const [newWorkoutDuration, setNewWorkoutDuration] = useState(30);
+  const [newWorkoutType, setNewWorkoutType] = useState<'cardio' | 'strength' | 'flexibility'>('cardio');
+  const [newWorkoutLevel, setNewWorkoutLevel] = useState<'Débutant' | 'Intermédiaire' | 'Avancé'>('Débutant');
+  const [newWorkoutCalories, setNewWorkoutCalories] = useState(240);
+  const [newWorkoutEquipment, setNewWorkoutEquipment] = useState('');
+  const [newWorkoutDescription, setNewWorkoutDescription] = useState('');
+  const [favorite, setFavorite] = useState(false);
+  const [recurring, setRecurring] = useState(false);
 
   useEffect(() => {
     getWorkouts().then(setWorkoutHistory);
   }, []);
+
+  useEffect(() => {
+    setNewWorkoutCalories(Math.round(newWorkoutDuration * 8));
+  }, [newWorkoutDuration]);
 
   const categories = [
     { key: 'all', label: 'Tous', emoji: '💪' },
@@ -160,21 +172,27 @@ export default function Workouts() {
   };
 
   const createCustomWorkout = () => {
-    if (!newWorkoutName || !newWorkoutDuration) {
-      setShowCreateModal(false);
+    if (!newWorkoutName) {
       return;
     }
-    const duration = parseInt(newWorkoutDuration, 10);
     const customWorkout = {
       name: newWorkoutName,
-      duration,
-      calories: Math.round(duration * 8),
-      type: 'custom',
-      description: "Entra\u00eenement personnalis\u00e9",
+      duration: newWorkoutDuration,
+      calories: newWorkoutCalories,
+      type: newWorkoutType,
+      difficulty: newWorkoutLevel,
+      equipment: newWorkoutEquipment,
+      description: newWorkoutDescription,
+      favorite,
+      recurring,
       exercises: [] as any[],
     };
     setNewWorkoutName('');
-    setNewWorkoutDuration('');
+    setNewWorkoutDuration(30);
+    setNewWorkoutEquipment('');
+    setNewWorkoutDescription('');
+    setFavorite(false);
+    setRecurring(false);
     setShowCreateModal(false);
     startWorkout(customWorkout);
   };
@@ -419,16 +437,94 @@ export default function Workouts() {
               value={newWorkoutName}
               onChangeText={setNewWorkoutName}
             />
+
+            <View style={styles.sliderRow}>
+              <Text style={styles.sliderLabel}>Durée: {newWorkoutDuration} min</Text>
+              <Slider
+                style={styles.slider}
+                minimumValue={5}
+                maximumValue={60}
+                step={5}
+                value={newWorkoutDuration}
+                onValueChange={setNewWorkoutDuration}
+                minimumTrackTintColor="#10B981"
+              />
+            </View>
+
+            <View style={styles.optionRow}>
+              <TouchableOpacity
+                style={[styles.typeOption, newWorkoutType === 'cardio' && styles.typeOptionSelected]}
+                onPress={() => setNewWorkoutType('cardio')}
+              >
+                <Activity size={20} color={newWorkoutType === 'cardio' ? 'white' : '#6B7280'} />
+                <Text style={[styles.typeLabel, newWorkoutType === 'cardio' && styles.typeLabelSelected]}>Cardio</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.typeOption, newWorkoutType === 'strength' && styles.typeOptionSelected]}
+                onPress={() => setNewWorkoutType('strength')}
+              >
+                <Dumbbell size={20} color={newWorkoutType === 'strength' ? 'white' : '#6B7280'} />
+                <Text style={[styles.typeLabel, newWorkoutType === 'strength' && styles.typeLabelSelected]}>Force</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.typeOption, newWorkoutType === 'flexibility' && styles.typeOptionSelected]}
+                onPress={() => setNewWorkoutType('flexibility')}
+              >
+                <StretchHorizontal size={20} color={newWorkoutType === 'flexibility' ? 'white' : '#6B7280'} />
+                <Text style={[styles.typeLabel, newWorkoutType === 'flexibility' && styles.typeLabelSelected]}>Souplesse</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.optionRow}>
+              {['Débutant', 'Intermédiaire', 'Avancé'].map(level => (
+                <TouchableOpacity
+                  key={level}
+                  style={[styles.levelOption, newWorkoutLevel === level && styles.levelOptionSelected]}
+                  onPress={() => setNewWorkoutLevel(level as any)}
+                >
+                  <Text style={[styles.levelLabel, newWorkoutLevel === level && styles.levelLabelSelected]}>
+                    {level}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
             <TextInput
               style={styles.input}
-              placeholder="Durée (min)"
-              keyboardType="numeric"
-              value={newWorkoutDuration}
-              onChangeText={setNewWorkoutDuration}
+              placeholder="Équipement nécessaire"
+              value={newWorkoutEquipment}
+              onChangeText={setNewWorkoutEquipment}
             />
+
+            <TextInput
+              style={[styles.input, { height: 80 } ]}
+              placeholder="Description"
+              multiline
+              value={newWorkoutDescription}
+              onChangeText={setNewWorkoutDescription}
+            />
+
+            <View style={styles.toggleRow}>
+              <Bookmark size={20} color="#6B7280" />
+              <Text style={styles.toggleLabel}>Ajouter aux favoris</Text>
+              <Switch value={favorite} onValueChange={setFavorite} />
+            </View>
+            <View style={styles.toggleRow}>
+              <Repeat size={20} color="#6B7280" />
+              <Text style={styles.toggleLabel}>Entraînement récurrent</Text>
+              <Switch value={recurring} onValueChange={setRecurring} />
+            </View>
+
+            <View style={styles.previewCard}>
+              <Text style={styles.previewTitle}>{newWorkoutName || 'Entraînement personnalisé'}</Text>
+              <Text style={styles.previewText}>{newWorkoutDuration} min • {newWorkoutLevel} • {newWorkoutType}</Text>
+              <Text style={styles.previewText}>{newWorkoutCalories} cal</Text>
+            </View>
+
             <TouchableOpacity
-              style={styles.addButton}
+              style={[styles.addButton, { opacity: newWorkoutName ? 1 : 0.5 } ]}
               onPress={createCustomWorkout}
+              disabled={!newWorkoutName}
             >
               <Text style={styles.addButtonText}>Démarrer</Text>
             </TouchableOpacity>
@@ -768,6 +864,91 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     marginBottom: 16,
+  },
+  sliderRow: {
+    marginBottom: 16,
+  },
+  sliderLabel: {
+    fontSize: 14,
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  slider: {
+    width: '100%',
+  },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  typeOption: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    marginHorizontal: 4,
+    backgroundColor: 'white',
+  },
+  typeOptionSelected: {
+    backgroundColor: '#10B981',
+  },
+  typeLabel: {
+    marginLeft: 8,
+    color: '#6B7280',
+  },
+  typeLabelSelected: {
+    color: 'white',
+  },
+  levelOption: {
+    flex: 1,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  levelOptionSelected: {
+    backgroundColor: '#10B981',
+  },
+  levelLabel: {
+    color: '#6B7280',
+  },
+  levelLabelSelected: {
+    color: 'white',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  toggleLabel: {
+    flex: 1,
+    marginLeft: 8,
+    color: '#1F2937',
+  },
+  previewCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  previewTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  previewText: {
+    fontSize: 14,
+    color: '#6B7280',
   },
   addButton: {
     backgroundColor: '#10B981',
