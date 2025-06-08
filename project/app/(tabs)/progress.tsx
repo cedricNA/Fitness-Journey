@@ -1,8 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  Image,
+  Modal,
+  TextInput
+} from 'react-native';
 import { TrendingUp, Camera, Calendar, Target, Award, ChevronRight, Scale, Ruler } from 'lucide-react-native';
 import ProgressChart from '@/components/ProgressChart';
-import { getWeights, WeightEntry } from '@/storage';
+import {
+  getWeights,
+  WeightEntry,
+  getMeasurements,
+  saveMeasurements,
+  MeasurementEntry,
+  getPhotos,
+  savePhotos,
+  ProgressPhoto
+} from '@/storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
@@ -26,6 +46,11 @@ export default function Progress() {
   ];
 
   const [weightData, setWeightData] = useState<WeightEntry[]>([]);
+  const [measurements, setMeasurements] = useState<MeasurementEntry[]>([]);
+  const [showMeasurementModal, setShowMeasurementModal] = useState(false);
+  const [measurementName, setMeasurementName] = useState('');
+  const [measurementValue, setMeasurementValue] = useState('');
+  const [measurementUnit, setMeasurementUnit] = useState('cm');
 
   useEffect(() => {
     getWeights().then((data) => {
@@ -33,14 +58,9 @@ export default function Progress() {
         setWeightData(data);
       }
     });
+    getMeasurements().then(setMeasurements);
+    getPhotos().then(setPhotos);
   }, []);
-
-  const measurements = [
-    { name: 'Tour de taille', current: 78, initial: 85, unit: 'cm', change: -7 },
-    { name: 'Tour de hanches', current: 95, initial: 98, unit: 'cm', change: -3 },
-    { name: 'Tour de bras', current: 28, initial: 26, unit: 'cm', change: +2 },
-    { name: 'Tour de cuisse', current: 52, initial: 55, unit: 'cm', change: -3 }
-  ];
 
   const achievements = [
     { title: 'Premier kilo perdu', date: '2024-01-07', emoji: '🎉' },
@@ -48,20 +68,66 @@ export default function Progress() {
     { title: '30 jours consécutifs', date: '2024-01-30', emoji: '💪' }
   ];
 
-  const progressPhotos = [
-    {
-      id: 1,
-      type: 'front',
-      date: '2024-01-01',
-      url: 'https://images.pexels.com/photos/6975474/pexels-photo-6975474.jpeg?auto=compress&cs=tinysrgb&w=400'
-    },
-    {
-      id: 2,
-      type: 'side',
-      date: '2024-01-01',
-      url: 'https://images.pexels.com/photos/6975475/pexels-photo-6975475.jpeg?auto=compress&cs=tinysrgb&w=400'
+  
+  const measurementSummary = React.useMemo(() => {
+    const grouped: Record<string, MeasurementEntry[]> = {};
+    measurements.forEach((m) => {
+      if (!grouped[m.name]) grouped[m.name] = [];
+      grouped[m.name].push(m);
+    });
+    return Object.keys(grouped).map((name) => {
+      const entries = grouped[name].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+      const initial = entries[0].value;
+      const current = entries[entries.length - 1].value;
+      return {
+        name,
+        unit: entries[0].unit,
+        initial,
+        current,
+        change: Number((current - initial).toFixed(1))
+      };
+    });
+  }, [measurements]);
+
+  const handleSaveMeasurement = () => {
+    if (!measurementName || !measurementValue) return;
+    const newEntry: MeasurementEntry = {
+      id: Date.now(),
+      name: measurementName,
+      value: parseFloat(measurementValue),
+      unit: measurementUnit,
+      date: new Date().toISOString()
+    };
+    const updated = [...measurements, newEntry];
+    setMeasurements(updated);
+    saveMeasurements(updated);
+    setShowMeasurementModal(false);
+    setMeasurementName('');
+    setMeasurementValue('');
+  };
+
+  const handleAddPhoto = async () => {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) return;
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.7
+    });
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      const newPhoto: ProgressPhoto = {
+        id: Date.now(),
+        uri,
+        type: 'front',
+        date: new Date().toISOString()
+      };
+      const updated = [...photos, newPhoto];
+      setPhotos(updated);
+      savePhotos(updated);
     }
-  ];
+  };
 
   const currentWeight = weightData[weightData.length - 1]?.value || 0;
   const initialWeight = weightData[0]?.value || 0;
@@ -164,7 +230,7 @@ export default function Progress() {
     <View>
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Évolution des mensurations</Text>
-        {measurements.map((measurement, index) => (
+        {measurementSummary.map((measurement, index) => (
           <View key={index} style={styles.measurementItem}>
             <View style={styles.measurementLeft}>
               <Text style={styles.measurementName}>{measurement.name}</Text>
@@ -189,7 +255,10 @@ export default function Progress() {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Ajouter une mesure</Text>
-        <TouchableOpacity style={styles.addMeasurementButton}>
+        <TouchableOpacity
+          style={styles.addMeasurementButton}
+          onPress={() => setShowMeasurementModal(true)}
+        >
           <Text style={styles.addMeasurementText}>+ Nouvelle mesure</Text>
         </TouchableOpacity>
       </View>
@@ -205,9 +274,9 @@ export default function Progress() {
         </Text>
         
         <View style={styles.photoGrid}>
-          {progressPhotos.map((photo) => (
+          {photos.map((photo) => (
             <View key={photo.id} style={styles.photoContainer}>
-              <Image source={{ uri: photo.url }} style={styles.progressPhoto} />
+              <Image source={{ uri: photo.uri }} style={styles.progressPhoto} />
               <Text style={styles.photoLabel}>
                 {photo.type === 'front' ? 'Face' : 'Profil'}
               </Text>
@@ -216,13 +285,13 @@ export default function Progress() {
               </Text>
             </View>
           ))}
-          
-          <TouchableOpacity style={styles.photoSlot}>
+
+          <TouchableOpacity style={styles.photoSlot} onPress={handleAddPhoto}>
             <Camera size={32} color="#9CA3AF" />
             <Text style={styles.photoSlotText}>Ajouter une photo</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.photoSlot}>
+          <TouchableOpacity style={styles.photoSlot} onPress={handleAddPhoto}>
             <Camera size={32} color="#9CA3AF" />
             <Text style={styles.photoSlotText}>Vue de dos</Text>
           </TouchableOpacity>
@@ -299,6 +368,39 @@ export default function Progress() {
           ))}
         </View>
       </ScrollView>
+      {showMeasurementModal && (
+        <Modal
+          visible={showMeasurementModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowMeasurementModal(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Nouvelle mesure</Text>
+              <TextInput
+                placeholder="Nom"
+                value={measurementName}
+                onChangeText={setMeasurementName}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Valeur"
+                value={measurementValue}
+                onChangeText={setMeasurementValue}
+                keyboardType="numeric"
+                style={styles.input}
+              />
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleSaveMeasurement}
+              >
+                <Text style={styles.saveButtonText}>Enregistrer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -614,5 +716,42 @@ const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
     fontSize: 12,
     color: colors.textSecondary,
     marginTop: 2,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: colors.card,
+    padding: 20,
+    borderRadius: 12,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 12,
+    width: '100%',
+    color: colors.text,
+  },
+  saveButton: {
+    backgroundColor: '#10B981',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });

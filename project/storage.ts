@@ -42,3 +42,36 @@ export async function getWorkouts(): Promise<WorkoutEntry[]> {
 export async function saveWorkouts(workouts: WorkoutEntry[]) {
   await AsyncStorage.setItem('workouts', JSON.stringify(workouts));
 }
+
+export interface MeasurementEntry {
+  id: number;
+  name: string;
+  value: number;
+  unit: string;
+  date: string;
+}
+
+export async function getMeasurements(): Promise<MeasurementEntry[]> {
+  const data = await AsyncStorage.getItem('measurements');
+  return data ? JSON.parse(data) : [];
+}
+
+export async function saveMeasurements(measurements: MeasurementEntry[]) {
+  await AsyncStorage.setItem('measurements', JSON.stringify(measurements));
+}
+
+export interface ProgressPhoto {
+  id: number;
+  uri: string;
+  type: string;
+  date: string;
+}
+
+export async function getPhotos(): Promise<ProgressPhoto[]> {
+  const data = await AsyncStorage.getItem('photos');
+  return data ? JSON.parse(data) : [];
+}
+
+export async function savePhotos(photos: ProgressPhoto[]) {
+  await AsyncStorage.setItem('photos', JSON.stringify(photos));
+}
