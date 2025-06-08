@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { Utensils, Activity, Moon, Droplets, Brain, ChevronRight, Target } from 'lucide-react-native';
+import ProgressChart from '@/components/ProgressChart';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
@@ -155,7 +156,14 @@ export default function Plan() {
     </View>
   );
 
-  const renderWorkoutTab = () => (
+  const renderWorkoutTab = () => {
+    const progressRatio = workoutPlan.completed / workoutPlan.weeklyGoal;
+    const progressColor = progressRatio >= 1 ? '#10B981' : goalColors.primary;
+    const progressData = workoutPlan.sessions.map((s, i) => ({
+      date: `${i + 1}`,
+      value: s.status === 'completed' ? 1 : 0,
+    }));
+    return (
     <View>
       {/* Weekly Progress */}
       <View style={[styles.card, { backgroundColor: colors.card }]}>
@@ -171,12 +179,18 @@ export default function Plan() {
             style={[
               styles.progressFill,
               { 
-                width: `${(workoutPlan.completed / workoutPlan.weeklyGoal) * 100}%`,
-                backgroundColor: goalColors.primary
+                width: `${progressRatio * 100}%`,
+                backgroundColor: progressColor
               }
-            ]} 
+            ]}
           />
         </View>
+        <ProgressChart
+          data={progressData}
+          color={progressColor}
+          minValue={0}
+          maxValue={1}
+        />
       </View>
 
       {/* Weekly Schedule */}
@@ -201,6 +215,7 @@ export default function Plan() {
       </View>
     </View>
   );
+  };
 
   const renderLifestyleTab = () => (
     <View>
