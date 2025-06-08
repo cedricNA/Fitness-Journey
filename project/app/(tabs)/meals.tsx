@@ -4,10 +4,14 @@ import { Plus, Search, Camera, Clock, Zap, Target, ChevronRight, Utensils, X } f
 import NutritionCard from '@/components/NutritionCard';
 import { FoodItem } from '@/types';
 import { getMeals, saveMeals } from '@/storage';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function Meals() {
+  const { type } = useLocalSearchParams<{ type?: string }>();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMeal, setSelectedMeal] = useState<'breakfast' | 'lunch' | 'snack' | 'dinner'>('breakfast');
+  const [selectedMeal, setSelectedMeal] = useState<'breakfast' | 'lunch' | 'snack' | 'dinner'>(
+    (type as 'breakfast' | 'lunch' | 'snack' | 'dinner') || 'breakfast'
+  );
   const [showAddMeal, setShowAddMeal] = useState(false);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [todayMeals, setTodayMeals] = useState<FoodItem[]>([]);
