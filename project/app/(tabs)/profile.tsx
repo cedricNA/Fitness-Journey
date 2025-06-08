@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 're
 import { User, Settings, Bell, Globe, Award, Target, ChevronRight, CreditCard as Edit, Camera, Activity } from 'lucide-react-native';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Profile() {
   const [notifications, setNotifications] = useState(true);
   const { user } = useUser();
   const router = useRouter();
+  const { colors } = useTheme();
 
   const [preferences] = useState({
     dietType: 'Équilibrée',
@@ -57,7 +59,7 @@ export default function Profile() {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: getGoalColor(user.goal) + '20' }]}>
         <View style={styles.profileSection}>
@@ -71,8 +73,8 @@ export default function Profile() {
           </TouchableOpacity>
           
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user.name}</Text>
-            <Text style={styles.userEmail}>{user.email}</Text>
+            <Text style={[styles.userName, { color: colors.text }]}>{user.name}</Text>
+            <Text style={[styles.userEmail, { color: colors.textSecondary }]}>{user.email}</Text>
             <View style={styles.goalBadge}>
               <Text style={[styles.goalText, { color: getGoalColor(user.goal) }]}>
                 {getGoalText(user.goal)} • {user.level}
@@ -106,7 +108,7 @@ export default function Profile() {
 
       {/* Stats */}
       <View style={styles.statsSection}>
-        <Text style={styles.sectionTitle}>Vos statistiques</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Vos statistiques</Text>
         <View style={styles.statsContainer}>
           {stats.map((stat, index) => (
             <View key={index} style={styles.statCard}>
@@ -124,15 +126,15 @@ export default function Profile() {
 
       {/* Preferences Overview */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Mes préférences</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Mes préférences</Text>
         <View style={styles.preferencesCard}>
           <View style={styles.preferenceItem}>
-            <Text style={styles.preferenceLabel}>Régime alimentaire</Text>
-            <Text style={styles.preferenceValue}>{preferences.dietType}</Text>
+            <Text style={[styles.preferenceLabel, { color: colors.textSecondary }]}>Régime alimentaire</Text>
+            <Text style={[styles.preferenceValue, { color: colors.text }]}>{preferences.dietType}</Text>
           </View>
           <View style={styles.preferenceItem}>
-            <Text style={styles.preferenceLabel}>Allergies</Text>
-            <Text style={styles.preferenceValue}>
+            <Text style={[styles.preferenceLabel, { color: colors.textSecondary }]}>Allergies</Text>
+            <Text style={[styles.preferenceValue, { color: colors.text }]}>
               {preferences.allergies.length > 0 ? preferences.allergies.join(', ') : 'Aucune'}
             </Text>
           </View>
@@ -142,7 +144,7 @@ export default function Profile() {
       {/* Menu Sections */}
       {menuSections.map((section, sectionIndex) => (
         <View key={sectionIndex} style={styles.section}>
-          <Text style={styles.sectionTitle}>{section.title}</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
           <View style={styles.menuCard}>
             {section.items.map((item, itemIndex) => (
               <TouchableOpacity 
@@ -157,7 +159,7 @@ export default function Profile() {
                   <View style={styles.menuIcon}>
                     <item.icon size={20} color="#6B7280" />
                   </View>
-                  <Text style={styles.menuLabel}>{item.label}</Text>
+                  <Text style={[styles.menuLabel, { color: colors.text }]}>{item.label}</Text>
                 </View>
                 
                 <View style={styles.menuRight}>
@@ -185,7 +187,7 @@ export default function Profile() {
 
       {/* Level Progress */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Progression du niveau</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Progression du niveau</Text>
         <View style={styles.levelCard}>
           <View style={styles.levelHeader}>
             <Text style={styles.levelTitle}>Niveau {user.level}</Text>
@@ -210,7 +212,7 @@ export default function Profile() {
 
       {/* Achievements Preview */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Réussites récentes</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Réussites récentes</Text>
         <View style={styles.achievementPreview}>
           <View style={styles.achievementItem}>
             <Text style={styles.achievementEmoji}>🔥</Text>

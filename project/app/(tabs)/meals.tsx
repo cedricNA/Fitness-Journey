@@ -5,6 +5,7 @@ import NutritionCard from '@/components/NutritionCard';
 import { FoodItem } from '@/types';
 import { getMeals, saveMeals } from '@/storage';
 import { useLocalSearchParams } from 'expo-router';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Meals() {
   const { type } = useLocalSearchParams<{ type?: string }>();
@@ -15,6 +16,7 @@ export default function Meals() {
   const [showAddMeal, setShowAddMeal] = useState(false);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [todayMeals, setTodayMeals] = useState<FoodItem[]>([]);
+  const { colors } = useTheme();
 
   useEffect(() => {
     getMeals().then(setTodayMeals);
@@ -102,11 +104,11 @@ export default function Meals() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }] }>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mes Repas</Text>
-        <Text style={styles.headerSubtitle}>Suivez votre nutrition quotidienne</Text>
+      <View style={[styles.header, { backgroundColor: colors.secondary || '#FEE2E2' }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Mes Repas</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Suivez votre nutrition quotidienne</Text>
         
         {/* Daily Progress */}
         <View style={styles.progressContainer}>

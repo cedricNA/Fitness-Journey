@@ -3,7 +3,26 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { UserProvider } from '@/context/UserContext';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { View } from 'react-native';
+
+function AppContainer() {
+  const { colors, theme } = useTheme();
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.background }
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+    </View>
+  );
+}
 
 export default function RootLayout() {
   useFrameworkReady();
@@ -11,11 +30,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <UserProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
+        <AppContainer />
       </UserProvider>
     </ThemeProvider>
   );

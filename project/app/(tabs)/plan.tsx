@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from
 import { Utensils, Activity, Moon, Droplets, Brain, ChevronRight, Target } from 'lucide-react-native';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -10,8 +11,9 @@ export default function Plan() {
   const [activeTab, setActiveTab] = useState<'nutrition' | 'workout' | 'lifestyle'>('nutrition');
   const { user } = useUser();
   const router = useRouter();
+  const { colors } = useTheme();
 
-  const themeColors = {
+  const goalPalettes = {
     weight_loss: {
       primary: '#EF4444',
       secondary: '#FEE2E2',
@@ -24,7 +26,9 @@ export default function Plan() {
     }
   };
 
-  const colors = themeColors[user.goal];
+  const goalColors = goalPalettes[user.goal];
+
+  const styles = getStyles(colors);
 
   const tabs = [
     { id: 'nutrition', title: 'Nutrition', icon: Utensils },
@@ -75,10 +79,10 @@ export default function Plan() {
   const renderNutritionTab = () => (
     <View>
       {/* Calories Overview */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Objectif calorique quotidien</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Objectif calorique quotidien</Text>
         <View style={styles.calorieContainer}>
-          <Text style={[styles.calorieNumber, { color: colors.primary }]}>
+          <Text style={[styles.calorieNumber, { color: goalColors.primary }]}>
             {nutritionPlan.calories.current}
           </Text>
           <Text style={styles.calorieTarget}>/ {nutritionPlan.calories.target} kcal</Text>
@@ -89,7 +93,7 @@ export default function Plan() {
               styles.progressFill, 
               { 
                 width: `${(nutritionPlan.calories.current / nutritionPlan.calories.target) * 100}%`,
-                backgroundColor: colors.primary 
+                backgroundColor: goalColors.primary
               }
             ]} 
           />
@@ -97,8 +101,8 @@ export default function Plan() {
       </View>
 
       {/* Macros */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Répartition des macronutriments</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Répartition des macronutriments</Text>
         <View style={styles.macrosContainer}>
           {Object.entries(nutritionPlan.macros).map(([key, macro]) => (
             <View key={key} style={styles.macroItem}>
@@ -125,8 +129,8 @@ export default function Plan() {
       </View>
 
       {/* Meal Suggestions */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Suggestions de repas</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Suggestions de repas</Text>
         {nutritionPlan.meals.map((meal, index) => (
           <TouchableOpacity
             key={index}
@@ -150,10 +154,10 @@ export default function Plan() {
   const renderWorkoutTab = () => (
     <View>
       {/* Weekly Progress */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Progression hebdomadaire</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Progression hebdomadaire</Text>
         <View style={styles.workoutProgress}>
-          <Text style={[styles.workoutNumber, { color: colors.primary }]}>
+          <Text style={[styles.workoutNumber, { color: goalColors.primary }]}>
             {workoutPlan.completed} / {workoutPlan.weeklyGoal}
           </Text>
           <Text style={styles.workoutLabel}>séances complétées</Text>
@@ -164,7 +168,7 @@ export default function Plan() {
               styles.progressFill,
               { 
                 width: `${(workoutPlan.completed / workoutPlan.weeklyGoal) * 100}%`,
-                backgroundColor: colors.primary 
+                backgroundColor: goalColors.primary
               }
             ]} 
           />
@@ -172,14 +176,14 @@ export default function Plan() {
       </View>
 
       {/* Weekly Schedule */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Planning de la semaine</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Planning de la semaine</Text>
         {workoutPlan.sessions.map((session, index) => (
           <TouchableOpacity key={index} style={styles.sessionItem}>
             <View style={styles.sessionLeft}>
               <View style={[
                 styles.sessionStatus,
-                { backgroundColor: session.status === 'completed' ? colors.primary : '#E5E7EB' }
+                { backgroundColor: session.status === 'completed' ? goalColors.primary : colors.border }
               ]} />
               <View style={styles.sessionInfo}>
                 <Text style={styles.sessionDay}>{session.day}</Text>
@@ -196,13 +200,13 @@ export default function Plan() {
 
   const renderLifestyleTab = () => (
     <View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Conseils bien-être</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.cardTitle, { color: colors.text }]}>Conseils bien-être</Text>
         {lifestyleTips.map((tip, index) => (
           <View key={index} style={styles.tipItem}>
             <View style={styles.tipHeader}>
               <View style={styles.tipIconContainer}>
-                <tip.icon size={20} color={colors.primary} />
+                <tip.icon size={20} color={goalColors.primary} />
               </View>
               <Text style={styles.tipTitle}>{tip.title}</Text>
             </View>
@@ -218,11 +222,11 @@ export default function Plan() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.secondary }]}>
-        <Text style={styles.headerTitle}>Mon Plan Personnalisé</Text>
-        <Text style={styles.headerSubtitle}>
+      <View style={[styles.header, { backgroundColor: goalColors.secondary }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Mon Plan Personnalisé</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
           Optimisé pour votre objectif de {user.goal === 'weight_loss' ? 'perte de poids' : 'prise de masse'}
         </Text>
       </View>
@@ -234,7 +238,7 @@ export default function Plan() {
             key={tab.id}
             style={[
               styles.tab,
-              activeTab === tab.id && { backgroundColor: colors.primary }
+              activeTab === tab.id && { backgroundColor: goalColors.primary }
             ]}
             onPress={() => setActiveTab(tab.id as any)}
           >
@@ -262,10 +266,11 @@ export default function Plan() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   header: {
     padding: 20,
@@ -276,12 +281,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -296,7 +301,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     gap: 6,
   },
   tabText: {
@@ -308,7 +313,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -321,7 +326,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 16,
   },
   calorieContainer: {
@@ -335,12 +340,12 @@ const styles = StyleSheet.create({
   },
   calorieTarget: {
     fontSize: 16,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginLeft: 8,
   },
   progressBar: {
     height: 6,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 3,
     overflow: 'hidden',
   },
@@ -358,19 +363,19 @@ const styles = StyleSheet.create({
   },
   macroLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     width: 80,
   },
   macroValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     width: 100,
   },
   macroProgress: {
     flex: 1,
     height: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
     borderRadius: 2,
     overflow: 'hidden',
   },
@@ -384,7 +389,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: colors.border,
   },
   mealInfo: {
     flex: 1,
@@ -392,12 +397,12 @@ const styles = StyleSheet.create({
   mealName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 2,
   },
   mealSuggestion: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   mealCalories: {
     flexDirection: 'row',
@@ -407,7 +412,7 @@ const styles = StyleSheet.create({
   mealCalorieText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   workoutProgress: {
     alignItems: 'center',
@@ -419,7 +424,7 @@ const styles = StyleSheet.create({
   },
   workoutLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 4,
   },
   sessionItem: {
@@ -428,7 +433,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: colors.border,
   },
   sessionLeft: {
     flexDirection: 'row',
@@ -447,16 +452,16 @@ const styles = StyleSheet.create({
   sessionDay: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   sessionType: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   sessionDuration: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   tipItem: {
@@ -471,7 +476,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -479,24 +484,24 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: colors.text,
   },
   tipContent: {
     paddingLeft: 44,
   },
   tipTarget: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 2,
   },
   tipCurrent: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   tipAdvice: {
     fontSize: 14,
-    color: '#1F2937',
+    color: colors.text,
     fontStyle: 'italic',
   },
 });

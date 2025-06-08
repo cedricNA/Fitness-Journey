@@ -4,6 +4,7 @@ import Slider from '@react-native-community/slider';
 import { Play, Plus, Clock, Zap, Target, Trophy, ChevronRight, Activity, Heart, X, Dumbbell, StretchHorizontal, Bookmark, Repeat } from 'lucide-react-native';
 import WorkoutTimer from '@/components/WorkoutTimer';
 import { getWorkouts, saveWorkouts, WorkoutEntry } from '@/storage';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -17,6 +18,8 @@ export default function Workouts() {
   const [newWorkoutDuration, setNewWorkoutDuration] = useState(30);
   const [newWorkoutType, setNewWorkoutType] = useState<'cardio' | 'strength' | 'flexibility'>('cardio');
   const [newWorkoutLevel, setNewWorkoutLevel] = useState<'Débutant' | 'Intermédiaire' | 'Avancé'>('Débutant');
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [newWorkoutCalories, setNewWorkoutCalories] = useState(240);
   const [newWorkoutEquipment, setNewWorkoutEquipment] = useState('');
   const [newWorkoutDescription, setNewWorkoutDescription] = useState('');
@@ -198,11 +201,11 @@ export default function Workouts() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }] }>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mes Entraînements</Text>
-        <Text style={styles.headerSubtitle}>Restez actif et atteignez vos objectifs</Text>
+      <View style={[styles.header, { backgroundColor: colors.secondary || '#FEE2E2' }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Mes Entraînements</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Restez actif et atteignez vos objectifs</Text>
         
         {/* Weekly Stats */}
         <View style={styles.statsContainer}>
@@ -535,13 +538,14 @@ export default function Workouts() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: import('@/context/ThemeContext').ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: '#D1FAE5',
+    backgroundColor: colors.secondary || '#D1FAE5',
     padding: 20,
     paddingTop: 60,
     borderBottomLeftRadius: 24,
@@ -550,17 +554,17 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginBottom: 20,
   },
   statsContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     gap: 12,
@@ -573,11 +577,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: colors.text,
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   categoryContainer: {
@@ -588,7 +592,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   categoryCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
